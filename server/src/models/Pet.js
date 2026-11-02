@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 /**
  * Pet MongoDB Model Schema
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll Number: 2303A51803
+ * Roll Number: 2303A51803 · Branch: CSE
  */
 const petSchema = new mongoose.Schema(
   {
@@ -28,11 +28,15 @@ const petSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ['Male', 'Female', 'Unknown'],
+      enum: {
+        values: ['Male', 'Female', 'Unknown'],
+        message: '{VALUE} is not a valid gender',
+      },
       default: 'Unknown',
     },
     weight: {
-      type: Number, // in kg
+      type: Number, // weight in kilograms
+      min: [0, 'Weight cannot be negative'],
     },
     allergies: {
       type: [String],
@@ -45,13 +49,27 @@ const petSchema = new mongoose.Schema(
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: [true, 'Pet owner is required'],
     },
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-module.exports = mongoose.model('Pet', petSchema);
+// Virtual for backward-compatibility with code expecting ownerId
+petSchema.virtual('ownerId').get(function () {
+  return this.owner;
+});
 
+// Pre-save hook: auto-fill owner if ownerId is passed
+petSchema.pre('validate', function (next) {
+  if (!this.owner && this.get('ownerId')) {
+    this.owner = this.get('ownerId');
+  }
+  next();
+});
+
+module.exports = mongoose.model('Pet', petSchema);
