@@ -8,10 +8,11 @@ export default function Footer() {
           🐾 <strong>PetCare Planner</strong> — Pet Care Records & Reminder Board
         </p>
         <p className="footer-meta">
-          Developed by <strong>PawTech Innovators</strong> | Project Lead & Integration: <strong>Godishala Kruthik Roshan (2303A52339)</strong>
+          Developed by <strong>PawTech Innovators</strong> | Frontend & Backend Integration: <strong>Godishala Kruthik Roshan (2303A52339)</strong>
         </p>
         <p className="footer-tech">React · Node.js · Express.js · MongoDB</p>
       </div>
     </footer>
   );
 }
+

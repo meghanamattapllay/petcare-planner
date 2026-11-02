@@ -1,6 +1,6 @@
 # 🏗️ PetCare Planner — System Architecture & Integration Guide
 
-**Integration & Project Lead:** Godishala Kruthik Roshan (Roll: `2303A52339` · Branch: CSE AIML)  
+**Frontend & Backend Integration:** Godishala Kruthik Roshan (Roll: `2303A52339` · Branch: CSE AIML)  
 **Team Name:** PawTech Innovators  
 **Stack:** React 18, Node.js v24, Express.js 4, MongoDB (Mongoose 8)
 
@@ -112,7 +112,7 @@ petcare-planner/
         │   ├── Footer.jsx         # Footer showing team attribution & stack
         │   └── ApiStatusBadge.jsx # Live visual indicator of backend connectivity
         └── pages/
-            ├── Dashboard.jsx      # Metrics overview, quick actions, lead verification card
+            ├── Dashboard.jsx      # Metrics overview, quick actions, integration status card
             ├── PetProfiles.jsx    # Pet directory, creation modal, allergy tags
             ├── RemindersPage.jsx  # Care timeline, overdue tags, filter controls
             ├── LoginPage.jsx      # Authentication form with 1-click demo fill
@@ -127,3 +127,4 @@ petcare-planner/
 2. **Axios Central Client (`apiClient.js`):** Intercepts outgoing requests to attach `Authorization: Bearer <jwt_token>` from `localStorage`.
 3. **Response Interception:** Automatically traps `401 Unauthorized` responses and cleans stale tokens while keeping user interface operational.
 4. **Live Ping Badge:** `ApiStatusBadge.jsx` polls `/api/health` every 20 seconds to give real-time visual feedback on server availability.
+

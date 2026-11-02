@@ -69,9 +69,9 @@ export default function Dashboard() {
         <div className="integration-header">
           <div className="integration-badge">
             <span className="pulse-dot"></span>
-            Integration & Project Lead Status
+            Integration Status & Gateway
           </div>
-          <span className="lead-tag">Lead: Godishala Kruthik Roshan (2303A52339)</span>
+          <span className="integration-tag">Integration: Godishala Kruthik Roshan (2303A52339)</span>
         </div>
         <div className="integration-body">
           <div className="integration-item">
@@ -156,3 +156,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

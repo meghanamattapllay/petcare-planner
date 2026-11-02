@@ -4,7 +4,7 @@ const CareRecord = require('../models/CareRecord');
  * Controller: Reminders & Timeline Status
  * Assigned Member: MATAPALLY MEGHANA (Reminders & Timeline)
  * Roll: 2303A52505 · Branch: CSE (AIML)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 // @desc    Get categorized reminders (Upcoming, Overdue, Completed) with day calculations
@@ -95,3 +95,4 @@ const getReminders = async (req, res, next) => {
 module.exports = {
   getReminders,
 };
+

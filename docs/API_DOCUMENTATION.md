@@ -1,7 +1,7 @@
 # 🐾 PetCare Planner — Complete API Documentation
 **Team:** PawTech Innovators  
 **Project:** PetCare Planner — Pet Care Records & Reminder Board  
-**Integration & Project Lead:** Godishala Kruthik Roshan (Roll: `2303A52339` · Branch: CSE AIML)  
+**Frontend & Backend Integration:** Godishala Kruthik Roshan (Roll: `2303A52339` · Branch: CSE AIML)  
 **Base URL:** `http://localhost:5000/api`  
 **Data Format:** `application/json`
 
@@ -20,7 +20,7 @@ Checks backend service availability, database connectivity, environment, and ret
   "status": "ONLINE",
   "project": "PetCare Planner — Pet Care Records & Reminder Board",
   "team": "PawTech Innovators",
-  "integrationLead": "Godishala Kruthik Roshan (2303A52339)",
+  "integration": "Godishala Kruthik Roshan (2303A52339)",
   "timestamp": "2026-11-02T10:25:48.000Z",
   "environment": "development",
   "database": "connected",
@@ -325,3 +325,4 @@ Returns computed upcoming, overdue, and due-today events along with day-differen
   }
 }
 ```
+

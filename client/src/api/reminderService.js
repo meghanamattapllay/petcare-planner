@@ -3,7 +3,7 @@ import apiClient from './apiClient';
 /**
  * Reminders API Service
  * Reminders & Timeline: MATAPALLY MEGHANA (Roll: 2303A52505)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 export const reminderService = {
@@ -12,3 +12,4 @@ export const reminderService = {
 };
 
 export default reminderService;
+

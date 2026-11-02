@@ -3,7 +3,7 @@ import apiClient from './apiClient';
 /**
  * Authentication Service
  * Assigned Backend: CHIPPA VASU (Roll: 2303A51618)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 export const authService = {
@@ -18,3 +18,4 @@ export const authService = {
 };
 
 export default authService;
+

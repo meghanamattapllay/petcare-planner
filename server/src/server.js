@@ -39,7 +39,7 @@ app.get('/api/health', (req, res) => {
     status: 'ONLINE',
     project: 'PetCare Planner — Pet Care Records & Reminder Board',
     team: 'PawTech Innovators',
-    integrationLead: 'Godishala Kruthik Roshan (2303A52339)',
+    integration: 'Godishala Kruthik Roshan (2303A52339)',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     database: getDBStatus(),
@@ -98,9 +98,10 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`🚀 PetCare Planner Server listening on port ${PORT}`);
     console.log(`📡 Health Check URL: http://localhost:${PORT}/api/health`);
     console.log(`🌐 Allowed Frontend Origin: ${clientOrigin}`);
-    console.log(`👨‍💻 Integration Lead: Godishala Kruthik Roshan (Roll: 2303A52339)`);
+    console.log(`👨‍💻 Integration: Godishala Kruthik Roshan (Roll: 2303A52339)`);
     console.log('====================================================');
   });
 }
 
 module.exports = app;
+

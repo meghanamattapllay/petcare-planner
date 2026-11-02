@@ -12,7 +12,7 @@ const { protect } = require('../middleware/authMiddleware');
 /**
  * Pet Routes
  * Assigned: BODASU NITHIN (Backend: Database & APIs)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 // Note: For seamless testing and UI preview, GET routes allow public access with fallback
@@ -23,3 +23,4 @@ router.put('/:id', updatePet);
 router.delete('/:id', deletePet);
 
 module.exports = router;
+
