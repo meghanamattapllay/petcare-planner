@@ -15,6 +15,7 @@ import {
   Plus,
   Search,
   ShieldCheck,
+  Shield,
   Sparkles,
   Trash2,
   X,
@@ -23,6 +24,7 @@ import {
 import "./styles.css";
 import CareTimeline from "./components/CareTimeline";
 import Reminders from "./components/Reminders";
+import AdminPortal from "./components/AdminPortal";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const emptyPet = { name: "", species: "Dog", breed: "", birthDate: "", notes: "", photoUrl: "" };
@@ -187,7 +189,7 @@ function Auth({ onLogin }) {
           <button
             type="button"
             className={loginType === "user" ? "active" : ""}
-            onClick={() => setLoginType("user")}
+            onClick={() => handleSelectLoginType("user")}
           >
             User login
           </button>
@@ -195,7 +197,7 @@ function Auth({ onLogin }) {
           <button
             type="button"
             className={loginType === "admin" ? "active" : ""}
-            onClick={() => setLoginType("admin")}
+            onClick={() => handleSelectLoginType("admin")}
           >
             Admin login
           </button>
@@ -279,7 +281,7 @@ function App() {
 }
 function Dashboard({ user, onLogout }) {
   const [pets, setPets] = useState([]);
-  const [activePage, setActivePage] = useState("Overview");
+  const [activePage, setActivePage] = useState(user?.role === "admin" ? "Admin" : "Overview");
   const [records, setRecords] = useState([]);
   const [selected, setSelected] = useState(null);
   const [modal, setModal] = useState(null);
@@ -358,6 +360,19 @@ function Dashboard({ user, onLogout }) {
         </div>
 
         <nav>
+          {user?.role === "admin" && (
+            <a
+              className={`nav-admin-link ${activePage === "Admin" ? "active" : ""}`}
+              onClick={() => {
+                setActivePage("Admin");
+                setSidebarOpen(false);
+              }}
+            >
+              <Shield size={18} />
+              Admin Portal <span className="admin-chip">Staff</span>
+            </a>
+          )}
+
           <a
             className={activePage === "Overview" ? "active" : ""}
             onClick={() => {

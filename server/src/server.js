@@ -78,6 +78,7 @@ app.use('/api/pets', require('./routes/petRoutes'));
 app.use('/api/records', require('./routes/recordRoutes'));
 app.use('/api/care-records', require('./routes/recordRoutes'));
 app.use('/api/reminders', require('./routes/reminderRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Root Fallback Info
 app.get('/', (req, res) => {

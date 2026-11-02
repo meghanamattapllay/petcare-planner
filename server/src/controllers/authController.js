@@ -111,11 +111,31 @@ const loginUser = async (req, res, next) => {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role || 'owner',
         },
       });
     }
 
-    // Fallback demo user for smooth integration demo
+    // Fallback demo admin user
+    if (
+      (email === 'admin@pawtech.com' && password === 'admin123') ||
+      (req.body.loginType === 'admin' && email === 'admin@pawtech.com')
+    ) {
+      const token = generateToken('demo_admin_user', 'admin@pawtech.com', 'System Administrator');
+      return res.json({
+        success: true,
+        message: 'Admin Login successful (Demo Mode)',
+        token,
+        user: {
+          id: 'demo_admin_user',
+          name: 'System Administrator',
+          email: 'admin@pawtech.com',
+          role: 'admin',
+        },
+      });
+    }
+
+    // Fallback demo owner user
     if (email === 'demo@pawtech.com' && password === 'pawtech123') {
       const token = generateToken('demo_pawtech_user', email, 'Demo Pet Owner');
       return res.json({
@@ -126,6 +146,7 @@ const loginUser = async (req, res, next) => {
           id: 'demo_pawtech_user',
           name: 'Demo Pet Owner',
           email,
+          role: 'owner',
         },
       });
     }
