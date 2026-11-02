@@ -9,3 +9,4 @@ Please see the full task specification in:
 2. `client/src/pages/RemindersPage.jsx`: Filter tabs (`All`, `Upcoming`, `⚠️ Overdue`), search bar, and schedule modal.
 3. `client/src/api/reminderService.js`: Pre-configured API client calling `GET /api/reminders`.
 4. Test by opening `http://localhost:5173/reminders`.
+
