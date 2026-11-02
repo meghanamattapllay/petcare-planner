@@ -137,3 +137,4 @@ You will be working directly in these files:
      -d "{\"email\":\"test@pawtech.com\",\"password\":\"password123\"}"
    ```
 3. Test frontend integration by opening `http://localhost:5173/login` in the browser and testing registration and login.
+

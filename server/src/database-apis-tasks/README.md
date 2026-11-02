@@ -10,3 +10,4 @@ Please see the full task specification in:
 3. `server/src/controllers/petController.js`: Complete Pet CRUD endpoints.
 4. `server/src/controllers/recordController.js`: Complete CareRecord CRUD endpoints.
 5. Run automated validation: `node server/test-integration.js`.
+

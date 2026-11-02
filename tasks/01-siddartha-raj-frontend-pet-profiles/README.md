@@ -116,3 +116,4 @@ await petService.deletePet(id);
 2. Open your browser to: **`http://localhost:5173/pets`**
 3. Ensure backend is also running in another terminal (`cd server && npm run dev`) so your API requests connect live!
 4. Test adding a pet, editing, and deleting.
+

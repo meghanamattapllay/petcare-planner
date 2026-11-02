@@ -9,3 +9,4 @@ Please see the full task specification in:
 2. `client/src/api/petService.js`: Pre-built methods (`getAllPets`, `getPetById`, `createPet`, `updatePet`, `deletePet`).
 3. `client/src/index.css`: Polish mobile responsiveness on `.pet-grid`, `.pet-card`, and `.modal-dialog`.
 4. Test by running `cd client && npm run dev` and browsing `http://localhost:5173/pets`.
+

@@ -10,3 +10,4 @@ Please see the full task specification in:
 3. `server/src/middleware/authMiddleware.js`: Verify Authorization Bearer token and attach req.user.
 4. `server/src/routes/authRoutes.js`: Expose `/register`, `/login`, `/me`.
 5. Test with Postman or `curl` against `http://localhost:5000/api/auth/register`.
+
