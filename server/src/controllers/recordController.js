@@ -1,4 +1,6 @@
 const CareRecord = require('../models/CareRecord');
+const Pet = require('../models/Pet');
+const User = require('../models/User');
 
 /**
  * Controller: Care Record CRUD & Timeline
@@ -101,35 +103,58 @@ const createRecord = async (req, res, next) => {
       });
     }
 
-    const ownerId = req.user ? req.user.id : 'demo_owner';
+    let ownerId = req.user ? req.user.id : null;
+    if (!ownerId && pet) {
+      try {
+        const petDoc = await Pet.findById(pet).lean();
+        if (petDoc && (petDoc.owner || petDoc.ownerId)) {
+          ownerId = petDoc.owner || petDoc.ownerId;
+        }
+      } catch (e) {}
+    }
+    if (!ownerId) {
+      try {
+        const userDoc = await User.findOne().lean();
+        if (userDoc) ownerId = userDoc._id;
+      } catch (e) {}
+    }
+    if (!ownerId) ownerId = 'demo_owner';
+
     let newRecord;
 
     try {
       newRecord = await CareRecord.create({
         pet,
+        petId: pet,
         owner: ownerId,
+        ownerId: ownerId,
         careType,
         title,
         dateAdministered: dateAdministered || new Date(),
+        eventDate: dateAdministered || new Date(),
         nextDueDate,
         status: status || 'Upcoming',
         notes,
         cost: Number(cost) || 0,
         veterinarian,
+        providerName: veterinarian,
       });
     } catch (err) {
       newRecord = {
         _id: 'rec_' + Date.now(),
         pet,
+        petId: pet,
         owner: ownerId,
         careType,
         title,
         dateAdministered: dateAdministered || new Date().toISOString(),
+        eventDate: dateAdministered || new Date().toISOString(),
         nextDueDate: new Date(nextDueDate).toISOString(),
         status: status || 'Upcoming',
         notes: notes || '',
         cost: Number(cost) || 0,
         veterinarian: veterinarian || 'General Vet',
+        providerName: veterinarian || 'General Vet',
         createdAt: new Date(),
       };
       mockRecords.unshift(newRecord);
@@ -170,5 +195,5 @@ module.exports = {
   getRecords,
   createRecord,
   deleteRecord,
+  mockRecords,
 };
-

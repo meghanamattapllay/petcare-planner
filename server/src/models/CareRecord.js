@@ -4,18 +4,25 @@ const mongoose = require('mongoose');
  * Care Record MongoDB Model Schema
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
  * Roll Number: 2303A51803
+ * Timeline & Reminders: MATAPALLY MEGHANA (2303A52505)
  */
 const careRecordSchema = new mongoose.Schema(
   {
     pet: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Pet',
-      required: [true, 'Care record must belong to a pet'],
+    },
+    petId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Pet',
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+    },
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     careType: {
       type: String,
@@ -31,13 +38,16 @@ const careRecordSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    eventDate: {
+      type: Date,
+    },
     nextDueDate: {
       type: Date,
       required: [true, 'Next scheduled or reminder due date is required'],
     },
     status: {
       type: String,
-      enum: ['Completed', 'Upcoming', 'Overdue'],
+      enum: ['Completed', 'Upcoming', 'Overdue', 'Due Today'],
       default: 'Upcoming',
     },
     notes: {
@@ -52,11 +62,15 @@ const careRecordSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    providerName: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 
 module.exports = mongoose.model('CareRecord', careRecordSchema);
-

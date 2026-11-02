@@ -29,19 +29,19 @@ You will be working directly in these files:
 ## 📋 Step-by-Step Task Checklist
 
 ### Step 1: Date Calculation Engine (`reminderController.js`)
-- [ ] Open `server/src/controllers/reminderController.js`.
-- [ ] Review how `nextDueDate` is compared against `now`:
+- [x] Open `server/src/controllers/reminderController.js`.
+- [x] Review how `nextDueDate` is compared against `now`:
   ```javascript
   const now = new Date();
   const due = new Date(item.nextDueDate);
   const diffMs = due.getTime() - now.getTime();
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
   ```
-- [ ] Categorize the care status:
+- [x] Categorize the care status:
   - `diffDays < 0`: **Overdue** (e.g. "Overdue by 5 days")
   - `diffDays === 0`: **Due Today**
   - `diffDays > 0`: **Upcoming** (e.g. "In 14 days")
-- [ ] Calculate and return summary metadata:
+- [x] Calculate and return summary metadata:
   ```json
   "summary": {
     "total": 3,
@@ -51,8 +51,8 @@ You will be working directly in these files:
   ```
 
 ### Step 2: Reminders & Timeline Page (`RemindersPage.jsx`)
-- [ ] Open `client/src/pages/RemindersPage.jsx`.
-- [ ] Verify that reminders display:
+- [x] Open `client/src/pages/RemindersPage.jsx`.
+- [x] Verify that reminders display:
   - Care type badge (`Vaccination`, `Medication`, `Grooming`, etc.).
   - Color-coded urgency status:
     - 🔴 Red border & pill for **Overdue**
@@ -63,15 +63,15 @@ You will be working directly in these files:
   - Veterinarian notes and dosage instructions.
 
 ### Step 3: Search & Dynamic Filters
-- [ ] Search input: Real-time filtering matching pet name, care type, or reminder title.
-- [ ] Filter tab buttons:
+- [x] Search input: Real-time filtering matching pet name, care type, or reminder title.
+- [x] Filter tab buttons:
   - `All Records`
   - `Upcoming`
   - `⚠️ Overdue`
-- [ ] Ensure count numbers on the filter buttons update dynamically based on the filtered results.
+- [x] Ensure count numbers on the filter buttons update dynamically based on the filtered results.
 
 ### Step 4: Schedule Care / Add Reminder Modal
-- [ ] Form to schedule an upcoming pet care event:
+- [x] Form to schedule an upcoming pet care event:
   - Pet selector dropdown.
   - Care type selector dropdown (`Vaccination`, `Medication`, `Grooming`, `Vet Visit`, etc.).
   - Title / Description.
@@ -79,11 +79,11 @@ You will be working directly in these files:
   - Next Due Date *(required)*.
   - Veterinarian / Clinic Name.
   - Notes / Dosage Instructions.
-- [ ] Connect submission to `recordService.createRecord(formData)` and refresh the timeline.
+- [x] Connect submission to `recordService.createRecord(formData)` and refresh the timeline.
 
 ### Step 5: Edge Cases & Empty States
-- [ ] Handle empty states gracefully (e.g., when a user has no upcoming reminders or search matches 0 results).
-- [ ] Validate date inputs: Ensure `nextDueDate` is provided and formatted as a valid date.
+- [x] Handle empty states gracefully (e.g., when a user has no upcoming reminders or search matches 0 results).
+- [x] Validate date inputs: Ensure `nextDueDate` is provided and formatted as a valid date.
 
 ---
 
@@ -98,7 +98,8 @@ You will be working directly in these files:
   "summary": {
     "total": 3,
     "upcomingCount": 2,
-    "overdueCount": 1
+    "overdueCount": 1,
+    "dueTodayCount": 0
   },
   "data": {
     "all": [
@@ -115,10 +116,15 @@ You will be working directly in these files:
       }
     ],
     "upcoming": [ ... ],
-    "overdue": [ ... ]
+    "overdue": [ ... ],
+    "dueToday": [ ... ]
   }
 }
 ```
+
+### Pet Care Timeline
+- **URL:** `GET /api/reminders/pet/:petId`
+- **Response `200 OK`:** Returns chronological timeline events and summary for the specified pet.
 
 ---
 
@@ -131,4 +137,3 @@ You will be working directly in these files:
 2. Open **`http://localhost:5173/reminders`** in your browser.
 3. Check the filter tabs ("All", "Upcoming", "Overdue") and verify that overdue items are highlighted in red.
 4. Test scheduling a reminder with a date in the past to see it trigger an overdue status, and a date in the future to see it listed as upcoming.
-
