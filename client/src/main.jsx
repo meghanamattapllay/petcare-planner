@@ -61,8 +61,7 @@ function Auth({ onLogin }) {
   const [mode, setMode] = useState("login");
   const [loginType, setLoginType] = useState("user");
   const [form, setForm] = useState({ name: "", email: "", password: "" }); const [error, setError] = useState("");
-  const [showNotifications, setShowNotifications] = useState(false);
-  const submit = async (event) => { event.preventDefault(); setError(""); try { const data = await api(`/auth/${mode}`, { method: "POST", body: JSON.stringify(form) }); localStorage.token = data.token; localStorage.user = JSON.stringify(data.user); onLogin(data.user); } catch (e) { setError(e.message); } };
+    const submit = async (event) => { event.preventDefault(); setError(""); try { const data = await api(`/auth/${mode}`, { method: "POST", body: JSON.stringify(form) }); localStorage.token = data.token; localStorage.user = JSON.stringify(data.user); onLogin(data.user); } catch (e) { setError(e.message); } };
   return (
     <main className="auth-page">
       <section className="auth-art">
@@ -214,6 +213,7 @@ function Dashboard({ user, onLogout }) {
   const [modal, setModal] = useState(null);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const load = async () => {
     try {
