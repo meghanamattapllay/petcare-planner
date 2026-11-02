@@ -277,8 +277,8 @@ function Dashboard({ user, onLogout }) {
             </div>
           </div>
 
-          <button className="logout" onClick={onLogout}>
-            <LogOut size={16} /> Sign out
+          <button className="btn-logout-red sidebar-logout-btn" onClick={onLogout} title="Sign out of PetCare Planner">
+            <LogOut size={16} /> Logout
           </button>
         </div>
       </aside>
@@ -295,11 +295,14 @@ function Dashboard({ user, onLogout }) {
           </div>
 
           <div className="header-actions">
-            <button className="icon-btn">
+            <button className="icon-btn" title="Notifications">
               <Bell size={19} />
               <i />
             </button>
-            <button className="avatar">{user.name[0]}</button>
+            <button className="avatar" title={user.name}>{user.name[0]}</button>
+            <button className="btn-logout-red" onClick={onLogout} title="Sign out of PetCare Planner">
+              <LogOut size={16} /> Logout
+            </button>
           </div>
         </header>
 

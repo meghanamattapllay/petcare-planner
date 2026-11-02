@@ -245,7 +245,12 @@ button {
     border-right: 1px solid #e8efeb;
     padding: 28px 18px;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .sidebar nav {
@@ -1196,4 +1201,42 @@ button {
 
 .login-type button:hover {
     border-color: #9fc4b7;
+}
+/* Red Logout Button Styling */
+.btn-logout-red {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ef4444;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.25);
+}
+
+.btn-logout-red:hover {
+    background-color: #dc2626 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.35);
+}
+
+.btn-logout-red:active {
+    background-color: #b91c1c !important;
+    transform: translateY(0);
+}
+
+.btn-logout-red svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.sidebar-logout-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 12px;
 }
