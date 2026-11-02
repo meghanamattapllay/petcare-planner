@@ -122,7 +122,7 @@ const createPet = async (req, res, next) => {
         weight: Number(weight) || 5,
         allergies: Array.isArray(allergies) ? allergies : (allergies ? [allergies] : []),
         notes: String(notes || '').trim(),
-        photoUrl: photoUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+        photoUrl: photoUrl || '',
         ownerId,
         owner: ownerId,
       });
@@ -138,7 +138,7 @@ const createPet = async (req, res, next) => {
         weight: Number(weight) || 5,
         allergies: allergies || [],
         notes: notes || '',
-        photoUrl: photoUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+        photoUrl: photoUrl || '',
         ownerId,
         owner: ownerId,
         createdAt: new Date(),

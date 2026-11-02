@@ -48,7 +48,7 @@ const petSchema = new mongoose.Schema(
     },
     photoUrl: {
       type: String,
-      default: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+      default: '',
     },
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
