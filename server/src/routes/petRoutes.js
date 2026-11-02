@@ -6,8 +6,9 @@ const {
   createPet,
   updatePet,
   deletePet,
+  getPetCareRecords,
+  createPetCareRecord,
 } = require('../controllers/petController');
-const { protect } = require('../middleware/authMiddleware');
 
 /**
  * Pet Routes
@@ -15,12 +16,15 @@ const { protect } = require('../middleware/authMiddleware');
  * Integrated by: Godishala Kruthik Roshan
  */
 
-// Note: For seamless testing and UI preview, GET routes allow public access with fallback
 router.get('/', getPets);
 router.get('/:id', getPetById);
 router.post('/', createPet);
 router.put('/:id', updatePet);
+router.patch('/:id', updatePet);
 router.delete('/:id', deletePet);
 
-module.exports = router;
+// Sub-routes for pet care records
+router.get('/:id/care-records', getPetCareRecords);
+router.post('/:id/care-records', createPetCareRecord);
 
+module.exports = router;

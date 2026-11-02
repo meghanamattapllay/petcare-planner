@@ -76,6 +76,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/pets', require('./routes/petRoutes'));
 app.use('/api/records', require('./routes/recordRoutes'));
+app.use('/api/care-records', require('./routes/recordRoutes'));
 app.use('/api/reminders', require('./routes/reminderRoutes'));
 
 // Root Fallback Info

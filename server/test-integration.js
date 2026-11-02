@@ -29,11 +29,11 @@ const server = app.listen(testPort, '127.0.0.1', async () => {
 
     console.log('[Integration Test] Verifying GET /api/pets ...');
     const pets = await checkEndpoint('/api/pets');
-    console.log('  -> Status:', pets.statusCode, '| Pet Count:', pets.data.count);
+    console.log('  -> Status:', pets.statusCode, '| Pet Count:', Array.isArray(pets.data) ? pets.data.length : pets.data.count);
 
     console.log('[Integration Test] Verifying GET /api/records ...');
     const records = await checkEndpoint('/api/records');
-    console.log('  -> Status:', records.statusCode, '| Record Count:', records.data.count);
+    console.log('  -> Status:', records.statusCode, '| Record Count:', Array.isArray(records.data) ? records.data.length : records.data.count);
 
     console.log('[Integration Test] Verifying GET /api/reminders ...');
     const reminders = await checkEndpoint('/api/reminders');

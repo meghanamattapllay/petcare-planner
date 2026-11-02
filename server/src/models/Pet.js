@@ -14,13 +14,16 @@ const petSchema = new mongoose.Schema(
     },
     species: {
       type: String,
-      required: [true, 'Species is required (e.g. Dog, Cat, Bird)'],
+      required: [true, 'Species is required (e.g. Dog, Cat, Bird, Rabbit, Other)'],
       trim: true,
     },
     breed: {
       type: String,
       trim: true,
-      default: 'Unknown',
+      default: '',
+    },
+    birthDate: {
+      type: Date,
     },
     age: {
       type: Number,
@@ -32,20 +35,28 @@ const petSchema = new mongoose.Schema(
       default: 'Unknown',
     },
     weight: {
-      type: Number, // in kg
+      type: Number,
     },
     allergies: {
       type: [String],
       default: [],
     },
+    notes: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     photoUrl: {
       type: String,
       default: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
     },
+    ownerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
   },
   {
@@ -53,5 +64,11 @@ const petSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Pet', petSchema);
+// Middleware to keep ownerId and owner synced
+petSchema.pre('save', function (next) {
+  if (this.ownerId && !this.owner) this.owner = this.ownerId;
+  if (this.owner && !this.ownerId) this.ownerId = this.owner;
+  next();
+});
 
+module.exports = mongoose.model('Pet', petSchema);

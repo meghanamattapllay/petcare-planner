@@ -1,25 +1,27 @@
 const Pet = require('../models/Pet');
+const CareRecord = require('../models/CareRecord');
 
 /**
- * Controller: Pet Profiles CRUD
+ * Controller: Pet Profiles CRUD & Pet Care Records
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
  * Roll: 2303A51803 · Branch: CSE
  * Integrated by: Godishala Kruthik Roshan
  */
 
-// In-memory store for instant demonstration when DB is connecting
 let mockPets = [
   {
     _id: 'pet_01',
     name: 'Milo',
     species: 'Dog',
     breed: 'Golden Retriever',
+    birthDate: '2023-04-12',
     age: 3,
     gender: 'Male',
     weight: 28,
     allergies: ['Peanut Butter', 'Certain Grasses'],
+    notes: 'Loves tennis balls and running in the park.',
     photoUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400',
-    owner: 'demo_owner',
+    ownerId: 'demo_owner',
     createdAt: new Date(),
   },
   {
@@ -27,19 +29,20 @@ let mockPets = [
     name: 'Luna',
     species: 'Cat',
     breed: 'Siamese',
+    birthDate: '2024-02-18',
     age: 2,
     gender: 'Female',
     weight: 4.5,
     allergies: ['Lactose'],
+    notes: 'Prefers quiet corners and feather wands.',
     photoUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400',
-    owner: 'demo_owner',
+    ownerId: 'demo_owner',
     createdAt: new Date(),
   },
 ];
 
-// @desc    Get all pets for the authenticated user
+// @desc    Get all pets
 // @route   GET /api/pets
-// @access  Private / Optional Public for demo
 const getPets = async (req, res, next) => {
   try {
     const ownerId = req.user ? req.user.id : null;
@@ -47,12 +50,13 @@ const getPets = async (req, res, next) => {
 
     try {
       if (ownerId) {
-        pets = await Pet.find({ owner: ownerId });
+        pets = await Pet.find({
+          $or: [{ ownerId }, { owner: ownerId }],
+        }).sort({ createdAt: -1 });
       } else {
-        pets = await Pet.find();
+        pets = await Pet.find().sort({ createdAt: -1 });
       }
     } catch (err) {
-      // Return mock data for seamless integration testing
       pets = mockPets;
     }
 
@@ -60,11 +64,8 @@ const getPets = async (req, res, next) => {
       pets = mockPets;
     }
 
-    res.json({
-      success: true,
-      count: pets.length,
-      data: pets,
-    });
+    // Return array directly for modern React clients
+    res.json(pets);
   } catch (error) {
     next(error);
   }
@@ -72,7 +73,6 @@ const getPets = async (req, res, next) => {
 
 // @desc    Get a single pet by ID
 // @route   GET /api/pets/:id
-// @access  Private / Public Demo
 const getPetById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -89,16 +89,10 @@ const getPetById = async (req, res, next) => {
     }
 
     if (!pet) {
-      return res.status(404).json({
-        success: false,
-        message: `Pet not found with id: ${id}`,
-      });
+      return res.status(404).json({ message: `Pet not found with id: ${id}` });
     }
 
-    res.json({
-      success: true,
-      data: pet,
-    });
+    res.json(pet);
   } catch (error) {
     next(error);
   }
@@ -106,16 +100,12 @@ const getPetById = async (req, res, next) => {
 
 // @desc    Create a new pet
 // @route   POST /api/pets
-// @access  Private
 const createPet = async (req, res, next) => {
   try {
-    const { name, species, breed, age, gender, weight, allergies, photoUrl } = req.body;
+    const { name, species, breed, birthDate, age, gender, weight, allergies, notes, photoUrl } = req.body;
 
     if (!name || !species) {
-      return res.status(400).json({
-        success: false,
-        message: 'Name and species are mandatory fields',
-      });
+      return res.status(400).json({ message: 'Name and species are mandatory fields.' });
     }
 
     const ownerId = req.user ? req.user.id : 'demo_owner';
@@ -123,14 +113,17 @@ const createPet = async (req, res, next) => {
 
     try {
       newPet = await Pet.create({
-        name,
+        name: String(name).trim(),
         species,
-        breed,
-        age,
-        gender,
-        weight,
+        breed: String(breed || '').trim(),
+        birthDate: birthDate || undefined,
+        age: Number(age) || 1,
+        gender: gender || 'Unknown',
+        weight: Number(weight) || 5,
         allergies: Array.isArray(allergies) ? allergies : (allergies ? [allergies] : []),
+        notes: String(notes || '').trim(),
         photoUrl: photoUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+        ownerId,
         owner: ownerId,
       });
     } catch (err) {
@@ -139,30 +132,28 @@ const createPet = async (req, res, next) => {
         name,
         species,
         breed: breed || 'Mixed',
+        birthDate: birthDate || new Date().toISOString(),
         age: Number(age) || 1,
         gender: gender || 'Unknown',
         weight: Number(weight) || 5,
         allergies: allergies || [],
+        notes: notes || '',
         photoUrl: photoUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+        ownerId,
         owner: ownerId,
         createdAt: new Date(),
       };
       mockPets.unshift(newPet);
     }
 
-    res.status(201).json({
-      success: true,
-      message: 'Pet profile created successfully',
-      data: newPet,
-    });
+    res.status(201).json(newPet);
   } catch (error) {
     next(error);
   }
 };
 
 // @desc    Update an existing pet
-// @route   PUT /api/pets/:id
-// @access  Private
+// @route   PUT /api/pets/:id or PATCH /api/pets/:id
 const updatePet = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -179,17 +170,10 @@ const updatePet = async (req, res, next) => {
     }
 
     if (!updated) {
-      return res.status(404).json({
-        success: false,
-        message: 'Pet profile not found for updating',
-      });
+      return res.status(404).json({ message: 'Pet profile not found for updating.' });
     }
 
-    res.json({
-      success: true,
-      message: 'Pet profile updated successfully',
-      data: updated,
-    });
+    res.json(updated);
   } catch (error) {
     next(error);
   }
@@ -197,26 +181,90 @@ const updatePet = async (req, res, next) => {
 
 // @desc    Delete a pet
 // @route   DELETE /api/pets/:id
-// @access  Private
 const deletePet = async (req, res, next) => {
   try {
     const { id } = req.params;
-    let deleted = false;
 
     try {
-      const resDb = await Pet.findByIdAndDelete(id);
-      if (resDb) deleted = true;
+      await Pet.findByIdAndDelete(id);
+      await CareRecord.deleteMany({ $or: [{ petId: id }, { pet: id }] });
     } catch (err) {
-      const initialLen = mockPets.length;
       mockPets = mockPets.filter((p) => p._id !== id);
-      if (mockPets.length < initialLen) deleted = true;
     }
 
-    res.json({
-      success: true,
-      message: 'Pet profile deleted successfully',
-      deletedId: id,
-    });
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get care records for a specific pet
+// @route   GET /api/pets/:id/care-records
+const getPetCareRecords = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let records = [];
+
+    try {
+      records = await CareRecord.find({
+        $or: [{ petId: id }, { pet: id }],
+      }).sort({ eventDate: -1, dateAdministered: -1 });
+    } catch (err) {
+      records = [];
+    }
+
+    res.json(records);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Create care record for a specific pet
+// @route   POST /api/pets/:id/care-records
+const createPetCareRecord = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { careType, title, eventDate, nextDueDate, notes, providerName, cost } = req.body;
+
+    if (!careType || !title) {
+      return res.status(400).json({ message: 'Care type and title are required.' });
+    }
+
+    const ownerId = req.user ? req.user.id : 'demo_owner';
+    let record;
+
+    try {
+      record = await CareRecord.create({
+        petId: id,
+        pet: id,
+        ownerId,
+        owner: ownerId,
+        careType,
+        title,
+        eventDate: eventDate || new Date(),
+        dateAdministered: eventDate || new Date(),
+        nextDueDate: nextDueDate || undefined,
+        notes: notes || '',
+        providerName: providerName || '',
+        cost: Number(cost) || 0,
+      });
+    } catch (err) {
+      record = {
+        _id: 'rec_' + Date.now(),
+        petId: id,
+        pet: id,
+        ownerId,
+        careType,
+        title,
+        eventDate: eventDate || new Date(),
+        nextDueDate,
+        notes,
+        providerName,
+        createdAt: new Date(),
+      };
+    }
+
+    res.status(201).json(record);
   } catch (error) {
     next(error);
   }
@@ -228,5 +276,6 @@ module.exports = {
   createPet,
   updatePet,
   deletePet,
+  getPetCareRecords,
+  createPetCareRecord,
 };
-
