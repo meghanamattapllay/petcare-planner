@@ -18,13 +18,13 @@
 
 ## 👥 Team Work Distribution & Progress Tracker
 
-| # | Member Name | Roll Number | Branch | Assigned Role & Deliverable | Status |
-|---|---|---|---|---|---|
-| **1** | **SIDDARTHA RAJ** | `2303A51917` | CSE | **Frontend: Pet Profiles**<br>• React application structure & navigation<br>• Home page & dashboard layouts<br>• Pet profile forms (Add/Edit/View/Delete)<br>• Pet cards & responsive CSS | 🔄 **In Progress**<br>*(Contract & Scaffolding Ready)* |
-| **2** | **CHIPPA VASU** | `2303A51618` | CSE | **Backend: Authentication**<br>• Node.js & Express auth setup<br>• User registration & login APIs<br>• User Mongoose model<br>• Password hashing (bcrypt) & JWT auth<br>• Protect middleware & authorization | 🔄 **In Progress**<br>*(Contract & Scaffolding Ready)* |
-| **3** | **BODASU NITHIN** | `2303A51803` | CSE | **Backend: Database & APIs**<br>• Pet and CareRecord MongoDB models<br>• Pet CRUD APIs<br>• Care record CRUD APIs<br>• Owner-data relational linking<br>• Request validation & Postman testing | 🔄 **In Progress**<br>*(Contract & Scaffolding Ready)* |
-| **4** | **MATAPALLY MEGHANA** | `2303A52505` | CSE (AIML) | **Reminders & Timeline**<br>• Care history timeline per pet<br>• Upcoming & overdue date calculations<br>• Search & filters by pet, care type, date<br>• Upcoming reminders dashboard<br>• Date validation & edge cases | 🔄 **In Progress**<br>*(Contract & Scaffolding Ready)* |
-| **5** | **GODISHALA KRUTHIK ROSHAN** | `2303A52339` | **CSE (AIML)** | **Frontend & Backend Integration**<br>• Project structure & repository definition<br>• Coordinate frontend & backend integration<br>• Connect React pages to backend APIs<br>• Automated healthchecks & error handling<br>• Full API documentation & submission package | **✅ COMPLETED & LIVE** |
+| # | Member Name | Roll Number | Branch | Assigned Role & Deliverable | Member Task Guide | Status |
+|---|---|---|---|---|---|---|
+| **1** | **SIDDARTHA RAJ** | `2303A51917` | CSE | **Frontend: Pet Profiles**<br>• React application structure & navigation<br>• Home page & dashboard layouts<br>• Pet profile forms (Add/Edit/View/Delete)<br>• Pet cards & responsive CSS | [📖 View Task Guide](tasks/01-siddartha-raj-frontend-pet-profiles/README.md) | 🔄 **In Progress**<br>*(Contract Ready)* |
+| **2** | **CHIPPA VASU** | `2303A51618` | CSE | **Backend: Authentication**<br>• Node.js & Express auth setup<br>• User registration & login APIs<br>• User Mongoose model<br>• Password hashing (bcrypt) & JWT auth<br>• Protect middleware & authorization | [📖 View Task Guide](tasks/02-chippa-vasu-backend-auth/README.md) | 🔄 **In Progress**<br>*(Contract Ready)* |
+| **3** | **BODASU NITHIN** | `2303A51803` | CSE | **Backend: Database & APIs**<br>• Pet and CareRecord MongoDB models<br>• Pet CRUD APIs<br>• Care record CRUD APIs<br>• Owner-data relational linking<br>• Request validation & Postman testing | [📖 View Task Guide](tasks/03-bodasu-nithin-backend-database-apis/README.md) | 🔄 **In Progress**<br>*(Contract Ready)* |
+| **4** | **MATAPALLY MEGHANA** | `2303A52505` | CSE (AIML) | **Reminders & Timeline**<br>• Care history timeline per pet<br>• Upcoming & overdue date calculations<br>• Search & filters by pet, care type, date<br>• Upcoming reminders dashboard<br>• Date validation & edge cases | [📖 View Task Guide](tasks/04-matapally-meghana-reminders-timeline/README.md) | 🔄 **In Progress**<br>*(Contract Ready)* |
+| **5** | **GODISHALA KRUTHIK ROSHAN** | `2303A52339` | **CSE (AIML)** | **Frontend & Backend Integration**<br>• Project structure & repository definition<br>• Coordinate frontend & backend integration<br>• Connect React pages to backend APIs<br>• Automated healthchecks & error handling<br>• Full API documentation & submission package | [📖 View Task Guide](tasks/05-godishala-kruthik-roshan-integration/README.md) | **✅ COMPLETED & LIVE** |
 
 > Detailed task breakdown and next steps for all members are documented in [docs/TASKS_ROADMAP.md](docs/TASKS_ROADMAP.md).
 
@@ -42,6 +42,12 @@ petcare-planner/
 │   ├── API_DOCUMENTATION.md  # Complete REST API reference
 │   ├── ARCHITECTURE.md       # Integration guide & data flow
 │   └── TASKS_ROADMAP.md      # Remaining member task roadmaps
+├── tasks/
+│   ├── 01-siddartha-raj-frontend-pet-profiles/README.md
+│   ├── 02-chippa-vasu-backend-auth/README.md
+│   ├── 03-bodasu-nithin-backend-database-apis/README.md
+│   ├── 04-matapally-meghana-reminders-timeline/README.md
+│   └── 05-godishala-kruthik-roshan-integration/README.md
 ├── server/
 │   ├── package.json          # Express, Mongoose, JWT, bcryptjs dependencies
 │   ├── .env.example          # Server environment settings

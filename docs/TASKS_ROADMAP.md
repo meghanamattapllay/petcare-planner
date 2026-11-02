@@ -7,13 +7,13 @@
 
 ## Team Overview & Roles
 
-| # | Member Name | Roll Number | Branch | Assigned Role | Module Status |
-|---|---|---|---|---|---|
-| 1 | **SIDDARTHA RAJ** | `2303A51917` | CSE | Frontend: Pet Profiles | Active / Contract Ready |
-| 2 | **CHIPPA VASU** | `2303A51618` | CSE | Backend: Authentication | Active / Contract Ready |
-| 3 | **BODASU NITHIN** | `2303A51803` | CSE | Backend: Database & APIs | Active / Contract Ready |
-| 4 | **MATAPALLY MEGHANA** | `2303A52505` | CSE (AIML) | Reminders & Timeline | Active / Contract Ready |
-| 5 | **GODISHALA KRUTHIK ROSHAN** | `2303A52339` | CSE (AIML) | **Frontend & Backend Integration** | **COMPLETED & VERIFIED** |
+| # | Member Name | Roll Number | Branch | Assigned Role | Dedicated Task Guide | Module Status |
+|---|---|---|---|---|---|---|
+| 1 | **SIDDARTHA RAJ** | `2303A51917` | CSE | Frontend: Pet Profiles | [📖 Read Tasks](../tasks/01-siddartha-raj-frontend-pet-profiles/README.md) | Active / Contract Ready |
+| 2 | **CHIPPA VASU** | `2303A51618` | CSE | Backend: Authentication | [📖 Read Tasks](../tasks/02-chippa-vasu-backend-auth/README.md) | Active / Contract Ready |
+| 3 | **BODASU NITHIN** | `2303A51803` | CSE | Backend: Database & APIs | [📖 Read Tasks](../tasks/03-bodasu-nithin-backend-database-apis/README.md) | Active / Contract Ready |
+| 4 | **MATAPALLY MEGHANA** | `2303A52505` | CSE (AIML) | Reminders & Timeline | [📖 Read Tasks](../tasks/04-matapally-meghana-reminders-timeline/README.md) | Active / Contract Ready |
+| 5 | **GODISHALA KRUTHIK ROSHAN** | `2303A52339` | CSE (AIML) | **Frontend & Backend Integration** | [📖 Read Tasks](../tasks/05-godishala-kruthik-roshan-integration/README.md) | **COMPLETED & VERIFIED** |
 
 ---
 
