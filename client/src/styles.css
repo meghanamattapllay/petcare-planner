@@ -1449,3 +1449,221 @@ button {
     background: #edf5f1;
     border-color: #bcd0c7;
 }
+
+
+/* Reminders Page Redesign Styles */
+.reminders-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 20px 0 24px;
+}
+
+.reminders-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    background: #ffffff;
+    border: 1px solid #e3ede8;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+.reminders-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.reminders-stat-card.active {
+    border-color: #3b6d60;
+    box-shadow: 0 0 0 3px rgba(59, 109, 96, 0.15);
+}
+
+.reminders-stat-card.active.rose {
+    border-color: #e16b5a;
+    box-shadow: 0 0 0 3px rgba(225, 107, 90, 0.15);
+}
+
+.reminders-stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.reminders-stat-card.green .stat-icon {
+    background: #e6f5ee;
+    color: #2b7a5e;
+}
+
+.reminders-stat-card.rose .stat-icon {
+    background: #fde8e5;
+    color: #d94b38;
+}
+
+.reminders-stat-card .stat-text {
+    flex: 1;
+}
+
+.reminders-stat-card strong {
+    display: block;
+    font-size: 26px;
+    font-weight: 800;
+    color: #172b25;
+    line-height: 1.1;
+}
+
+.reminders-stat-card span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #698278;
+}
+
+.stat-pill-label {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: #f1f6f4;
+    color: #4b6b60;
+}
+
+.reminders-stat-card.active .stat-pill-label {
+    background: #3b6d60;
+    color: #ffffff;
+}
+
+.reminders-stat-card.active.rose .stat-pill-label {
+    background: #e16b5a;
+    color: #ffffff;
+}
+
+/* Filter Toolbar */
+.reminders-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 1px solid #e1ece6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    margin: 18px 0 24px;
+}
+
+.reminders-filters .search {
+    flex: 1;
+    min-width: 240px;
+    margin: 0;
+}
+
+.filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-select,
+.filter-date {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid #d4e2dc;
+    background: #fafcfb;
+    font-size: 13px;
+    font-weight: 500;
+    color: #233b33;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-select:hover,
+.filter-date:hover {
+    border-color: #3b6d60;
+    background: #ffffff;
+}
+
+.filter-select:focus,
+.filter-date:focus {
+    border-color: #3b6d60;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 109, 96, 0.12);
+}
+
+.filter-reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px dashed #cfded7;
+    background: transparent;
+    color: #627b71;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-reset-btn:hover {
+    border-color: #c26d60;
+    color: #c26d60;
+    background: #fdf5f4;
+}
+
+/* Reminder Card Details */
+.reminder-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.reminder-header-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.reminder-header-row strong {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #172c25;
+}
+
+.reminder-type-badge {
+    font-size: 11px;
+    font-weight: 600;
+    background: #f0f6f3;
+    color: #4a7566;
+    padding: 3px 9px;
+    border-radius: 8px;
+    border: 1px solid #deebe4;
+}
+
+.reminder-pet-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: #6c857b;
+    margin-top: 4px;
+}
+
+.reminder-notes-snippet {
+    color: #8ca098;
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 380px;
+}

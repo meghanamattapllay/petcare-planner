@@ -580,7 +580,7 @@ function Dashboard({ user, onLogout }) {
               </div>
 
               <div className="welcome-illustration">
-                <span role="img" aria-label="Happy Dog" style={{ fontSize: "80px", lineHeight: "1" }}>🐕</span> <span>✦</span>
+                <span role="img" aria-label="Happy Dog" style={{ fontSize: "74px", lineHeight: "1" }}>🐕</span> <span style={{ color: "#d97706" }}>✦</span>
               </div>
             </section>
 
@@ -673,38 +673,50 @@ function Dashboard({ user, onLogout }) {
             </section>
 
             <div className="reminder-list">
-              {records.slice(0, 3).map((record) => (
-                <div className="reminder" key={record._id}>
-                  <div className={`reminder-date ${record.status}`}>
-                    <strong>
-                      {new Date(record.nextDueDate).getDate()}
-                    </strong>
-                    <small>
-                      {new Date(record.nextDueDate).toLocaleString(
-                        "en",
-                        { month: "short" }
-                      )}
-                    </small>
-                  </div>
+              {records.slice(0, 4).map((record) => {
+                const dueDateObj = record.nextDueDate ? new Date(record.nextDueDate) : null;
+                const isValidDate = dueDateObj && !isNaN(dueDateObj.getTime());
+                const statusClass = record.status || "upcoming";
 
-                  <div>
-                    <strong>{record.title}</strong>
-                    <p>
-                      {record.petId?.name || "Your pet"} ·{" "}
-                      {record.careType}
-                    </p>
-                  </div>
+                return (
+                  <div className="reminder" key={record._id}>
+                    <div className={`reminder-date ${statusClass}`}>
+                      <strong>{isValidDate ? dueDateObj.getDate() : "--"}</strong>
+                      <small>
+                        {isValidDate
+                          ? dueDateObj.toLocaleString("en", { month: "short" })
+                          : "Due"}
+                      </small>
+                    </div>
 
-                  <span className={`pill ${record.status}`}>
-                    {record.status}
-                  </span>
-                </div>
-              ))}
+                    <div className="reminder-content">
+                      <div className="reminder-header-row">
+                        <strong>{record.title}</strong>
+                        <span className="reminder-type-badge">
+                          {record.careType}
+                        </span>
+                      </div>
+                      <div className="reminder-pet-info">
+                        <span>🐾 {record.petId?.name || "Your pet"}</span>
+                        {record.notes && (
+                          <span className="reminder-notes-snippet">
+                            • {record.notes}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <span className={`pill ${statusClass}`}>
+                      {statusClass}
+                    </span>
+                  </div>
+                );
+              })}
 
               {!records.length && (
                 <div className="empty compact">
-                  No care reminders yet. Add a care record from a pet
-                  profile.
+                  <CalendarDays size={26} />
+                  <p>No care reminders yet. Add a care record from a pet profile.</p>
                 </div>
               )}
             </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Bell, CalendarDays, Search } from "lucide-react";
+import { Bell, CalendarDays, Filter, RotateCcw, Search } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -50,20 +50,27 @@ const Reminders = () => {
         "Other",
     ];
 
+    const upcomingCount = useMemo(
+        () => records.filter((r) => r.status === "upcoming").length,
+        [records]
+    );
+
+    const overdueCount = useMemo(
+        () => records.filter((r) => r.status === "overdue").length,
+        [records]
+    );
+
     const filteredRecords = useMemo(() => {
-        console.log("Reminder records:", records);
-        console.log("Selected status:", status);
         const today = new Date();
-        const todayString =
-            `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+        const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
         return records.filter((record) => {
             const petName = record.petId?.name || "";
             const title = record.title || "";
-
-            const searchText = search.toLowerCase();
+            const searchText = search.toLowerCase().trim();
 
             const matchesSearch =
+                !searchText ||
                 title.toLowerCase().includes(searchText) ||
                 petName.toLowerCase().includes(searchText);
 
@@ -74,35 +81,34 @@ const Reminders = () => {
                 ? new Date(record.nextDueDate).toISOString().slice(0, 10)
                 : "";
 
-            const isOverdue = dueDate !== "" && dueDate < todayString;
-            const isUpcoming = dueDate !== "" && dueDate >= todayString;
-
             const matchesStatus =
                 status === "All" ||
                 record.status?.toLowerCase() === status.toLowerCase();
 
-            const matchesDate =
-                !dateFilter || dueDate === dateFilter;
+            const matchesDate = !dateFilter || dueDate === dateFilter;
 
-            return (
-                matchesSearch &&
-                matchesCareType &&
-                matchesStatus &&
-                matchesDate
-            );
+            return matchesSearch && matchesCareType && matchesStatus && matchesDate;
         });
     }, [records, search, careType, status, dateFilter]);
 
-    const upcomingCount = records.filter(
-        (record) => record.status === "upcoming"
-    ).length;
+    const isFiltered = Boolean(
+        search || careType !== "All" || status !== "All" || dateFilter
+    );
 
-    const overdueCount = records.filter(
-        (record) => record.status === "overdue"
-    ).length;
+    const resetFilters = () => {
+        setSearch("");
+        setCareType("All");
+        setStatus("All");
+        setDateFilter("");
+    };
 
     if (loading) {
-        return <div className="empty compact">Loading reminders...</div>;
+        return (
+            <div className="empty compact">
+                <CalendarDays size={28} />
+                <p>Loading care reminders...</p>
+            </div>
+        );
     }
 
     return (
@@ -112,31 +118,48 @@ const Reminders = () => {
                     <span className="eyebrow">STAY ON TOP OF THEIR CARE</span>
                     <h2>Care reminders</h2>
                 </div>
-                <Bell size={24} />
             </div>
 
-            <div className="stat-grid">
-                <div className="stat green">
+            {/* Interactive Stat Cards for Filtering */}
+            <div className="reminders-stat-grid">
+                <button
+                    type="button"
+                    className={`reminders-stat-card green ${status === "upcoming" ? "active" : ""}`}
+                    onClick={() => setStatus(status === "upcoming" ? "All" : "upcoming")}
+                    title="Click to filter by upcoming care"
+                >
                     <div className="stat-icon">
-                        <CalendarDays />
+                        <CalendarDays size={24} />
                     </div>
-                    <div>
+                    <div className="stat-text">
                         <strong>{upcomingCount}</strong>
-                        <span>Upcoming</span>
+                        <span>Upcoming care</span>
                     </div>
-                </div>
+                    <span className="stat-pill-label">
+                        {status === "upcoming" ? "Filtered" : "Filter"}
+                    </span>
+                </button>
 
-                <div className="stat rose">
+                <button
+                    type="button"
+                    className={`reminders-stat-card rose ${status === "overdue" ? "active" : ""}`}
+                    onClick={() => setStatus(status === "overdue" ? "All" : "overdue")}
+                    title="Click to filter by overdue care"
+                >
                     <div className="stat-icon">
-                        <Bell />
+                        <Bell size={24} />
                     </div>
-                    <div>
+                    <div className="stat-text">
                         <strong>{overdueCount}</strong>
-                        <span>Overdue</span>
+                        <span>Overdue care</span>
                     </div>
-                </div>
+                    <span className="stat-pill-label">
+                        {status === "overdue" ? "Filtered" : "Filter"}
+                    </span>
+                </button>
             </div>
 
+            {/* Modern Clean Filter Toolbar */}
             <div className="reminders-filters">
                 <div className="search">
                     <Search size={17} />
@@ -147,59 +170,115 @@ const Reminders = () => {
                     />
                 </div>
 
-                <select value={careType} onChange={(event) => setCareType(event.target.value)}>
-                    {careTypes.map((type) => (
-                        <option key={type} value={type}>
-                            {type === "All" ? "All care types" : type}
-                        </option>
-                    ))}
-                </select>
+                <div className="filter-controls">
+                    <select
+                        className="filter-select"
+                        value={careType}
+                        onChange={(event) => setCareType(event.target.value)}
+                        title="Filter by care type"
+                    >
+                        {careTypes.map((type) => (
+                            <option key={type} value={type}>
+                                {type === "All" ? "All care types" : type}
+                            </option>
+                        ))}
+                    </select>
 
-                <select value={status} onChange={(event) => setStatus(event.target.value)}>
-                    <option value="All">All statuses</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="overdue">Overdue</option>
-                </select>
+                    <select
+                        className="filter-select"
+                        value={status}
+                        onChange={(event) => setStatus(event.target.value)}
+                        title="Filter by status"
+                    >
+                        <option value="All">All statuses</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
 
-                <input
-                    type="date"
-                    value={dateFilter}
-                    onChange={(event) => setDateFilter(event.target.value)}
-                />
+                    <input
+                        className="filter-date"
+                        type="date"
+                        value={dateFilter}
+                        onChange={(event) => setDateFilter(event.target.value)}
+                        title="Filter by specific date"
+                    />
+
+                    {isFiltered && (
+                        <button
+                            type="button"
+                            className="filter-reset-btn"
+                            onClick={resetFilters}
+                            title="Reset all filters"
+                        >
+                            <RotateCcw size={13} /> Reset
+                        </button>
+                    )}
+                </div>
             </div>
 
             {error && <div className="error">{error}</div>}
 
+            {/* Polished Reminders Card List */}
             <div className="reminder-list">
-                {filteredRecords.map((record) => (
-                    <article className="reminder" key={record._id}>
-                        <div className={`reminder-date ${record.status}`}>
-                            <strong>{new Date(record.nextDueDate).getDate()}</strong>
-                            <small>
-                                {new Date(record.nextDueDate).toLocaleString("en", {
-                                    month: "short",
-                                })}
-                            </small>
-                        </div>
+                {filteredRecords.map((record) => {
+                    const dueDateObj = record.nextDueDate ? new Date(record.nextDueDate) : null;
+                    const isValidDate = dueDateObj && !isNaN(dueDateObj.getTime());
+                    const statusClass = record.status || "upcoming";
 
-                        <div>
-                            <strong>{record.title}</strong>
-                            <p>
-                                {record.petId?.name || "Your pet"} · {record.careType}
-                            </p>
-                        </div>
+                    return (
+                        <article className="reminder" key={record._id}>
+                            <div className={`reminder-date ${statusClass}`}>
+                                <strong>{isValidDate ? dueDateObj.getDate() : "--"}</strong>
+                                <small>
+                                    {isValidDate
+                                        ? dueDateObj.toLocaleString("en", { month: "short" })
+                                        : "Due"}
+                                </small>
+                            </div>
 
-                        <span className={`pill ${record.status}`}>
-                            {record.status}
-                        </span>
-                    </article>
-                ))}
+                            <div className="reminder-content">
+                                <div className="reminder-header-row">
+                                    <strong>{record.title}</strong>
+                                    <span className="reminder-type-badge">
+                                        {record.careType}
+                                    </span>
+                                </div>
+                                <div className="reminder-pet-info">
+                                    <span>🐾 {record.petId?.name || "Your pet"}</span>
+                                    {record.notes && (
+                                        <span className="reminder-notes-snippet">
+                                            • {record.notes}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <span className={`pill ${statusClass}`}>
+                                {statusClass}
+                            </span>
+                        </article>
+                    );
+                })}
 
                 {!error && filteredRecords.length === 0 && (
                     <div className="empty compact">
                         <Bell size={28} />
                         <h3>No reminders found</h3>
-                        <p>Try changing your search or filters.</p>
+                        <p>
+                            {isFiltered
+                                ? "No care events match the current search or filters."
+                                : "No upcoming or overdue care recorded yet."}
+                        </p>
+                        {isFiltered && (
+                            <button
+                                type="button"
+                                className="filter-reset-btn"
+                                style={{ margin: "14px auto 0" }}
+                                onClick={resetFilters}
+                            >
+                                Clear filters
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
