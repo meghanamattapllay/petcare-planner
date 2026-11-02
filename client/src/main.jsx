@@ -580,7 +580,8 @@ function Dashboard({ user, onLogout }) {
               </div>
 
               <div className="welcome-illustration">
-                <span role="img" aria-label="Happy Dog" style={{ fontSize: "74px", lineHeight: "1" }}>🐕</span> <span style={{ color: "#d97706" }}>✦</span>
+                <span className="hero-dog">🐕</span>
+                <span className="hero-sparkle">✦</span>
               </div>
             </section>
 

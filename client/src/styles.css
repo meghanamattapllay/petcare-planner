@@ -383,42 +383,55 @@ button {
 
 .welcome-panel {
     background: #e0eee9;
-    border-radius: 13px;
-    margin-top: 32px;
-    padding: 35px 42px;
+    border-radius: 16px;
+    margin-top: 24px;
+    padding: 32px 42px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    overflow: hidden;
-    min-height: 215px
+    overflow: visible;
+    min-height: 200px;
+    position: relative;
 }
 
 .welcome-panel h2 {
     font-size: 30px;
     line-height: 1.12;
     letter-spacing: -1.3px;
-    margin: 10px 0 10px
+    margin: 10px 0 10px;
 }
 
 .welcome-panel p {
     font-size: 13px;
     color: #668077;
-    margin-bottom: 22px
+    margin-bottom: 22px;
 }
 
 .welcome-illustration {
-    font-size: 120px;
-    align-self: end;
-    margin-right: 8%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    filter: drop-shadow(0 8px 1px #bfd9d0)
+    font-size: 110px;
+    line-height: 1;
+    margin-right: 5%;
+    user-select: none;
+    flex-shrink: 0;
+    filter: drop-shadow(0 8px 12px rgba(45, 90, 75, 0.15));
 }
 
-.welcome-illustration span {
+.welcome-illustration .hero-dog {
+    display: inline-block;
+    font-size: 110px;
+    line-height: 1;
+}
+
+.welcome-illustration .hero-sparkle {
     position: absolute;
-    font-size: 28px;
-    right: -15px;
-    top: 15px;
-    color: #e18465
+    font-size: 32px;
+    right: -16px;
+    top: -4px;
+    color: #e18465;
 }
 
 .stat-grid {
