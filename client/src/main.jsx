@@ -24,7 +24,32 @@ import CareTimeline from "./components/CareTimeline";
 import Reminders from "./components/Reminders";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-const emptyPet = { name: "", species: "Dog", breed: "", birthDate: "", notes: "" };
+const emptyPet = { name: "", species: "Dog", breed: "", birthDate: "", notes: "", photoUrl: "" };
+const defaultPetImages = {
+  Dog: [
+    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300",
+    "https://images.unsplash.com/photo-1552053831-71594a27632d?w=300",
+    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300",
+    "https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=300",
+    "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=300"
+  ],
+  Cat: [
+    "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300",
+    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=300",
+    "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=300"
+  ],
+  Bird: ["https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=300"],
+  Rabbit: ["https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300"],
+  Other: ["https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=300"]
+};
+
+const getPetImage = (pet) => {
+  if (pet && pet.photoUrl && String(pet.photoUrl).startsWith("http")) return pet.photoUrl;
+  const list = (pet && defaultPetImages[pet.species]) || defaultPetImages.Dog;
+  const charCode = (pet && pet.name ? pet.name.charCodeAt(0) : 65);
+  return list[charCode % list.length];
+};
+
 const speciesIcon = (species) => species === "Dog" ? Dog : species === "Cat" ? Cat : PawPrint;
 const api = async (path, options = {}) => {
   const response = await fetch(`${API}${path}`, { ...options, headers: { "Content-Type": "application/json", ...(options.headers || {}), ...(localStorage.token ? { Authorization: `Bearer ${localStorage.token}` } : {}) } });
@@ -36,6 +61,7 @@ function Auth({ onLogin }) {
   const [mode, setMode] = useState("login");
   const [loginType, setLoginType] = useState("user");
   const [form, setForm] = useState({ name: "", email: "", password: "" }); const [error, setError] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
   const submit = async (event) => { event.preventDefault(); setError(""); try { const data = await api(`/auth/${mode}`, { method: "POST", body: JSON.stringify(form) }); localStorage.token = data.token; localStorage.user = JSON.stringify(data.user); onLogin(data.user); } catch (e) { setError(e.message); } };
   return (
     <main className="auth-page">
@@ -295,13 +321,65 @@ function Dashboard({ user, onLogout }) {
           </div>
 
           <div className="header-actions">
-            <button className="icon-btn" title="Notifications">
-              <Bell size={19} />
-              <i />
-            </button>
-            <button className="avatar" title={user.name}>{user.name[0]}</button>
-            <button className="btn-logout-red" onClick={onLogout} title="Sign out of PetCare Planner">
-              <LogOut size={16} /> Logout
+            <div className="notification-wrapper">
+              <button
+                className={`icon-btn ${showNotifications ? "active" : ""}`}
+                title="Care Notifications"
+                onClick={() => setShowNotifications(!showNotifications)}
+              >
+                <Bell size={19} />
+                {overdue > 0 && <i />}
+              </button>
+
+              {showNotifications && (
+                <div className="notifications-dropdown">
+                  <div className="notifications-header">
+                    <h4>Care Notifications</h4>
+                    <span className="notifications-count">{overdue} Needs attention</span>
+                  </div>
+                  <div className="notifications-list">
+                    {records.slice(0, 6).map((r) => (
+                      <div
+                        key={r._id}
+                        className="notification-item"
+                        onClick={() => {
+                          setActivePage("Care calendar");
+                          setShowNotifications(false);
+                        }}
+                      >
+                        <div className="notification-title">
+                          <span>{r.title}</span>
+                          <span className={`pill ${r.status}`}>{r.status}</span>
+                        </div>
+                        <div className="notification-meta">
+                          {r.petId?.name || "Your pet"} · Due: {new Date(r.nextDueDate).toLocaleDateString()}
+                        </div>
+                      </div>
+                    ))}
+                    {!records.length && (
+                      <div className="notifications-empty">No current notifications</div>
+                    )}
+                  </div>
+                  <div className="notifications-footer">
+                    <button
+                      onClick={() => {
+                        setActivePage("Care calendar");
+                        setShowNotifications(false);
+                      }}
+                    >
+                      View all in Care calendar →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button
+              className="avatar"
+              title={user.name}
+              onClick={() => setActivePage("Overview")}
+            >
+              {user.name[0]}
             </button>
           </div>
         </header>
@@ -401,18 +479,21 @@ function Dashboard({ user, onLogout }) {
                 value={pets.length}
                 tone="peach"
                 icon={<PawPrint />}
+                onClick={() => setActivePage("My pets")}
               />
               <Stat
                 label="Upcoming"
                 value={due}
                 tone="green"
                 icon={<CalendarDays />}
+                onClick={() => setActivePage("Care calendar")}
               />
               <Stat
                 label="Needs attention"
                 value={overdue}
                 tone="rose"
                 icon={<Bell />}
+                onClick={() => setActivePage("Care calendar")}
               />
             </section>
 
@@ -560,8 +641,48 @@ function Dashboard({ user, onLogout }) {
   );
 }
 
-function Stat({ label, value, tone, icon }) { return <div className={`stat ${tone}`}><div className="stat-icon">{icon}</div><div><strong>{value}</strong><span>{label}</span></div></div>; }
-function PetCard({ pet, onView }) { const Icon = speciesIcon(pet.species); return <button className="pet-card" onClick={onView}><div className={`pet-avatar ${pet.species.toLowerCase()}`}><Icon size={34} strokeWidth={1.5} /></div><div className="pet-card-main"><span className="species">{pet.species}</span><h3>{pet.name}</h3><p>{pet.breed || "Breed not added"}{pet.birthDate ? ` · Born ${new Date(pet.birthDate).getFullYear()}` : ""}</p></div><ChevronRight className="card-arrow" size={19} /></button>; }
+function Stat({ label, value, tone, icon, onClick }) {
+  return (
+    <button
+      type="button"
+      className={`stat ${tone}`}
+      onClick={onClick}
+      style={{ cursor: "pointer", border: "none", textAlign: "left", width: "100%", font: "inherit" }}
+    >
+      <div className="stat-icon">{icon}</div>
+      <div>
+        <strong>{value}</strong>
+        <span>{label}</span>
+      </div>
+    </button>
+  );
+}
+
+function PetCard({ pet, onView }) {
+  const imgUrl = getPetImage(pet);
+  return (
+    <button className="pet-card" onClick={onView}>
+      <div className="pet-avatar">
+        <img
+          src={imgUrl}
+          alt={pet.name}
+          onError={(e) => {
+            e.target.src = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300";
+          }}
+        />
+      </div>
+      <div className="pet-card-main">
+        <span className="species">{pet.species}</span>
+        <h3>{pet.name}</h3>
+        <p>
+          {pet.breed || "Breed not added"}
+          {pet.birthDate ? ` · Born ${new Date(pet.birthDate).getFullYear()}` : ""}
+        </p>
+      </div>
+      <ChevronRight className="card-arrow" size={19} />
+    </button>
+  );
+}
 function PetDetails({ pet, onClose, onEdit, onDelete, onAddCareRecord }) {
   const Icon = speciesIcon(pet.species);
 
@@ -572,8 +693,14 @@ function PetDetails({ pet, onClose, onEdit, onDelete, onAddCareRecord }) {
           <X />
         </button>
 
-        <div className={`details-avatar ${pet.species.toLowerCase()}`}>
-          <Icon size={58} strokeWidth={1.3} />
+        <div className="details-avatar">
+          <img
+            src={getPetImage(pet)}
+            alt={pet.name}
+            onError={(e) => {
+              e.target.src = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300";
+            }}
+          />
         </div>
 
         <span className="eyebrow">{pet.species} profile</span>
@@ -622,7 +749,7 @@ function PetDetails({ pet, onClose, onEdit, onDelete, onAddCareRecord }) {
     </div>
   );
 }
-function PetForm({ pet, onClose, onSaved }) { const [form, setForm] = useState(pet || emptyPet); const [error, setError] = useState(""); const save = async (e) => { e.preventDefault(); setError(""); try { await api(pet ? `/pets/${pet._id}` : "/pets", { method: pet ? "PATCH" : "POST", body: JSON.stringify(form) }); onSaved(); } catch (err) { setError(err.message); } }; const update = (key, value) => setForm({ ...form, [key]: value }); return <div className="overlay"><section className="form-panel"><button className="close" onClick={onClose}><X /></button><span className="eyebrow">{pet ? "Update profile" : "New companion"}</span><h2>{pet ? `Edit ${pet.name}` : "Add a pet"}</h2><p className="panel-intro">A few details help keep their care journey organized.</p><form onSubmit={save} className="pet-form"><label>Pet name<input value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="e.g. Maple" required /></label><label>Species<select value={form.species} onChange={(e) => update("species", e.target.value)}>{["Dog", "Cat", "Bird", "Rabbit", "Other"].map((item) => <option key={item}>{item}</option>)}</select></label><label>Breed <span>optional</span><input value={form.breed} onChange={(e) => update("breed", e.target.value)} placeholder="e.g. Golden Retriever" /></label><label>Birth date <span>optional</span><input type="date" max={new Date().toISOString().slice(0, 10)} value={form.birthDate ? form.birthDate.slice(0, 10) : ""} onChange={(e) => update("birthDate", e.target.value)} /></label><label>Notes <span>optional</span><textarea rows="3" value={form.notes} onChange={(e) => update("notes", e.target.value)} placeholder="Favorite things, important details..." /></label>{error && <div className="error">{error}</div>}<div className="form-actions"><button type="button" className="secondary" onClick={onClose}>Cancel</button><button className="primary">{pet ? "Save changes" : "Create profile"} <ChevronRight size={17} /></button></div></form></section></div>; }
+function PetForm({ pet, onClose, onSaved }) { const [form, setForm] = useState(pet || emptyPet); const [error, setError] = useState(""); const save = async (e) => { e.preventDefault(); setError(""); try { await api(pet ? `/pets/${pet._id}` : "/pets", { method: pet ? "PATCH" : "POST", body: JSON.stringify(form) }); onSaved(); } catch (err) { setError(err.message); } }; const update = (key, value) => setForm({ ...form, [key]: value }); return <div className="overlay"><section className="form-panel"><button className="close" onClick={onClose}><X /></button><span className="eyebrow">{pet ? "Update profile" : "New companion"}</span><h2>{pet ? `Edit ${pet.name}` : "Add a pet"}</h2><p className="panel-intro">A few details help keep their care journey organized.</p><form onSubmit={save} className="pet-form"><label>Pet name<input value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="e.g. Maple" required /></label><label>Species<select value={form.species} onChange={(e) => update("species", e.target.value)}>{["Dog", "Cat", "Bird", "Rabbit", "Other"].map((item) => <option key={item}>{item}</option>)}</select></label><label>Breed <span>optional</span><input value={form.breed} onChange={(e) => update("breed", e.target.value)} placeholder="e.g. Golden Retriever" /></label><label>Photo URL <span>optional</span><input value={form.photoUrl || ""} onChange={(e) => update("photoUrl", e.target.value)} placeholder="https://... (or leave empty for auto dog photo)" /></label><label>Birth date <span>optional</span><input type="date" max={new Date().toISOString().slice(0, 10)} value={form.birthDate ? form.birthDate.slice(0, 10) : ""} onChange={(e) => update("birthDate", e.target.value)} /></label><label>Notes <span>optional</span><textarea rows="3" value={form.notes} onChange={(e) => update("notes", e.target.value)} placeholder="Favorite things, important details..." /></label>{error && <div className="error">{error}</div>}<div className="form-actions"><button type="button" className="secondary" onClick={onClose}>Cancel</button><button className="primary">{pet ? "Save changes" : "Create profile"} <ChevronRight size={17} /></button></div></form></section></div>; }
 function CareRecordForm({ pet, onClose, onSaved }) {
   const [form, setForm] = useState({
     title: "",
