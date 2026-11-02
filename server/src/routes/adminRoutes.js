@@ -24,3 +24,4 @@ router.get('/care-categories', getCareCategories);
 router.post('/care-categories', addCareCategory);
 
 module.exports = router;
+
