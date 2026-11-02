@@ -367,7 +367,7 @@ body {
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
-.lead-tag {
+.integration-tag {
   font-size: 0.82rem;
   background: #f1f5f9;
   padding: 0.25rem 0.6rem;
@@ -807,11 +807,6 @@ body {
   flex-direction: column;
 }
 
-.team-card.card-lead-highlight {
-  border: 2px solid var(--primary);
-  background: linear-gradient(to bottom, #ffffff, #f0f7ff);
-}
-
 .team-card-header {
   display: flex;
   justify-content: space-between;
@@ -833,15 +828,6 @@ body {
 .member-name {
   font-size: 1.15rem;
   font-weight: 700;
-}
-
-.lead-star {
-  font-size: 0.75rem;
-  background: var(--primary);
-  color: #ffffff;
-  padding: 0.15rem 0.45rem;
-  border-radius: 999px;
-  vertical-align: middle;
 }
 
 .member-role {
@@ -1124,3 +1110,4 @@ body {
     grid-template-columns: 1fr;
   }
 }
+

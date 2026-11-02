@@ -1,6 +1,6 @@
 /**
  * Centralized Error Handling Middleware
- * Integration Lead: Godishala Kruthik Roshan
+ * Integration: Godishala Kruthik Roshan
  */
 
 const errorHandler = (err, req, res, next) => {
@@ -23,3 +23,4 @@ const notFoundHandler = (req, res, next) => {
 };
 
 module.exports = { errorHandler, notFoundHandler };
+

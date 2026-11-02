@@ -3,31 +3,11 @@ import React from 'react';
 export default function TeamPage() {
   const teamMembers = [
     {
-      id: 5,
-      name: 'GODISHALA KRUTHIK ROSHAN',
-      role: 'Integration & Project Lead',
-      rollNo: '2303A52339',
-      branch: 'CSE (AIML)',
-      lead: true,
-      tasks: [
-        'Created GitHub repository structure & workspace organization',
-        'Built full MERN architecture (Client + Server + DB configuration)',
-        'Implemented centralized Axios API Client & Vite proxy handshake',
-        'Wired live health check endpoint (/api/health) and status indicators',
-        'Configured .env.example, environment isolation & security middleware',
-        'Prepared API Documentation, architecture specifications, and README',
-        'Integrated frontend views and established modular contracts for all members',
-      ],
-      deliverable: 'Fully integrated application skeleton, API bridge, and final submission package.',
-      status: 'COMPLETED & LIVE',
-    },
-    {
       id: 1,
       name: 'SIDDARTHA RAJ',
       role: 'Frontend: Pet Profiles',
       rollNo: '2303A51917',
       branch: 'CSE',
-      lead: false,
       tasks: [
         'Build custom responsive styles and animation for pet profile cards',
         'Enhance add/edit pet modal with image upload and avatar previews',
@@ -44,7 +24,6 @@ export default function TeamPage() {
       role: 'Backend: Authentication',
       rollNo: '2303A51618',
       branch: 'CSE',
-      lead: false,
       tasks: [
         'Finalize User Mongoose model and password salt/hashing using bcryptjs',
         'Complete JWT token generation and authorization header verification in authMiddleware.js',
@@ -61,7 +40,6 @@ export default function TeamPage() {
       role: 'Backend: Database & APIs',
       rollNo: '2303A51803',
       branch: 'CSE',
-      lead: false,
       tasks: [
         'Finalize Pet and CareRecord Mongoose schema indexes and relationships',
         'Link each pet and care record strictly to authenticated req.user.id',
@@ -78,7 +56,6 @@ export default function TeamPage() {
       role: 'Reminders & Timeline',
       rollNo: '2303A52505',
       branch: 'CSE (AIML)',
-      lead: false,
       tasks: [
         'Fine-tune dynamic date calculation algorithm (due today, overdue count, days left)',
         'Implement multi-attribute search and filter by pet, care type, and date range',
@@ -88,6 +65,24 @@ export default function TeamPage() {
       ],
       deliverable: 'Care timeline, reminder calculation engine, search, and filtering.',
       status: 'IN PROGRESS / CONTRACT READY',
+    },
+    {
+      id: 5,
+      name: 'GODISHALA KRUTHIK ROSHAN',
+      role: 'Frontend & Backend Integration',
+      rollNo: '2303A52339',
+      branch: 'CSE (AIML)',
+      tasks: [
+        'Created GitHub repository structure & workspace organization',
+        'Built full MERN architecture (Client + Server + DB configuration)',
+        'Implemented centralized Axios API Client & Vite proxy handshake',
+        'Wired live health check endpoint (/api/health) and status indicators',
+        'Configured .env.example, environment isolation & security middleware',
+        'Prepared API Documentation, architecture specifications, and README',
+        'Integrated frontend views and established modular contracts for all members',
+      ],
+      deliverable: 'Fully integrated application skeleton, API bridge, and final submission package.',
+      status: 'COMPLETED & LIVE',
     },
   ];
 
@@ -104,18 +99,16 @@ export default function TeamPage() {
 
       <div className="team-grid">
         {teamMembers.map((member) => (
-          <div key={member.id} className={`team-card ${member.lead ? 'card-lead-highlight' : ''}`}>
+          <div key={member.id} className="team-card">
             <div className="team-card-header">
               <div className="member-main">
                 <span className="member-num">#{member.id}</span>
                 <div>
-                  <h3 className="member-name">
-                    {member.name} {member.lead && <span className="lead-star">★ Project Lead</span>}
-                  </h3>
+                  <h3 className="member-name">{member.name}</h3>
                   <p className="member-role">{member.role}</p>
                 </div>
               </div>
-              <span className={`status-badge-chip ${member.lead ? 'chip-completed' : 'chip-ready'}`}>
+              <span className={`status-badge-chip ${member.status.startsWith('COMPLETED') ? 'chip-completed' : 'chip-ready'}`}>
                 {member.status}
               </span>
             </div>
@@ -126,11 +119,11 @@ export default function TeamPage() {
             </div>
 
             <div className="member-tasks-section">
-              <h4>{member.lead ? 'Completed Lead Tasks:' : 'Target & Remaining Tasks:'}</h4>
+              <h4>Assigned Module Tasks:</h4>
               <ul className="tasks-list">
                 {member.tasks.map((task, idx) => (
-                  <li key={idx} className={member.lead ? 'task-done' : 'task-pending'}>
-                    <span className="task-bullet">{member.lead ? '✓' : '○'}</span>
+                  <li key={idx} className={member.status.startsWith('COMPLETED') ? 'task-done' : 'task-pending'}>
+                    <span className="task-bullet">{member.status.startsWith('COMPLETED') ? '✓' : '○'}</span>
                     {task}
                   </li>
                 ))}

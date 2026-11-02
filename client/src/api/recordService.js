@@ -4,7 +4,7 @@ import apiClient from './apiClient';
  * Care Record Service
  * Backend: BODASU NITHIN (Roll: 2303A51803)
  * Timeline: MATAPALLY MEGHANA (Roll: 2303A52505)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 export const recordService = {
@@ -19,3 +19,4 @@ export const recordService = {
 };
 
 export default recordService;
+

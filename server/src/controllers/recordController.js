@@ -4,7 +4,7 @@ const CareRecord = require('../models/CareRecord');
  * Controller: Care Record CRUD & Timeline
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
  * Timeline Integration: MATAPALLY MEGHANA (Reminders & Timeline)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 let mockRecords = [
@@ -171,3 +171,4 @@ module.exports = {
   createRecord,
   deleteRecord,
 };
+

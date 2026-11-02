@@ -2,7 +2,7 @@ import axios from 'axios';
 
 /**
  * PetCare Planner - Centralized API Client
- * Integration Lead: Godishala Kruthik Roshan (Roll: 2303A52339)
+ * Integration: Godishala Kruthik Roshan (Roll: 2303A52339)
  * Purpose: Coordinates communication between React Frontend and Express Backend
  */
 
@@ -67,3 +67,4 @@ export const checkApiHealth = async () => {
 };
 
 export default apiClient;
+

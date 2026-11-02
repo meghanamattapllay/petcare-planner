@@ -5,9 +5,10 @@ const { getReminders } = require('../controllers/reminderController');
 /**
  * Reminder & Timeline Routes
  * Assigned: MATAPALLY MEGHANA (Reminders & Timeline)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 router.get('/', getReminders);
 
 module.exports = router;
+

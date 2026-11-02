@@ -4,7 +4,7 @@ import apiClient from './apiClient';
  * Pet Profiles API Service
  * Frontend Component: SIDDARTHA RAJ (Roll: 2303A51917)
  * Backend CRUD: BODASU NITHIN (Roll: 2303A51803)
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 export const petService = {
@@ -25,3 +25,4 @@ export const petService = {
 };
 
 export default petService;
+

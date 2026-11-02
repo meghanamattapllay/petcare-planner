@@ -6,7 +6,7 @@ const User = require('../models/User');
  * Controller: Authentication
  * Assigned Member: CHIPPA VASU (Backend: Authentication)
  * Roll: 2303A51618 · Branch: CSE
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 // Helper to generate JWT Token
@@ -117,13 +117,13 @@ const loginUser = async (req, res, next) => {
 
     // Fallback demo user for smooth integration demo
     if (email === 'demo@pawtech.com' && password === 'pawtech123') {
-      const token = generateToken('demo_pawtech_lead', email, 'Demo Pet Owner');
+      const token = generateToken('demo_pawtech_user', email, 'Demo Pet Owner');
       return res.json({
         success: true,
         message: 'Login successful (Demo Mode)',
         token,
         user: {
-          id: 'demo_pawtech_lead',
+          id: 'demo_pawtech_user',
           name: 'Demo Pet Owner',
           email,
         },
@@ -158,3 +158,4 @@ module.exports = {
   loginUser,
   getMe,
 };
+

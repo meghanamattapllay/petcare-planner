@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 /**
  * Authentication & Authorization Middleware
  * Assigned to: CHIPPA VASU (Backend: Authentication - Roll: 2303A51618)
- * Coordinated by Integration Lead: Godishala Kruthik Roshan
+ * Coordinated by: Godishala Kruthik Roshan (Integration - Roll: 2303A52339)
  */
 
 const protect = async (req, res, next) => {
@@ -41,3 +41,4 @@ const protect = async (req, res, next) => {
 };
 
 module.exports = { protect };
+

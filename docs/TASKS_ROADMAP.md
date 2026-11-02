@@ -2,25 +2,24 @@
 
 **Team:** PawTech Innovators  
 **Project:** PetCare Planner — Pet Care Records & Reminder Board  
-**Integration & Project Lead:** Godishala Kruthik Roshan (Roll: `2303A52339` · Branch: CSE AIML)
 
 ---
 
 ## Team Overview & Roles
 
-| # | Member Name | Roll Number | Branch | Assigned Role | Integration Status |
+| # | Member Name | Roll Number | Branch | Assigned Role | Module Status |
 |---|---|---|---|---|---|
-| 5 | **GODISHALA KRUTHIK ROSHAN** | `2303A52339` | CSE (AIML) | **Integration & Project Lead** | **COMPLETED & VERIFIED** |
 | 1 | **SIDDARTHA RAJ** | `2303A51917` | CSE | Frontend: Pet Profiles | Active / Contract Ready |
 | 2 | **CHIPPA VASU** | `2303A51618` | CSE | Backend: Authentication | Active / Contract Ready |
 | 3 | **BODASU NITHIN** | `2303A51803` | CSE | Backend: Database & APIs | Active / Contract Ready |
 | 4 | **MATAPALLY MEGHANA** | `2303A52505` | CSE (AIML) | Reminders & Timeline | Active / Contract Ready |
+| 5 | **GODISHALA KRUTHIK ROSHAN** | `2303A52339` | CSE (AIML) | **Frontend & Backend Integration** | **COMPLETED & VERIFIED** |
 
 ---
 
 ## Detailed Task Breakdown
 
-### 5. GODISHALA KRUTHIK ROSHAN — Integration & Project Lead (COMPLETED)
+### 5. GODISHALA KRUTHIK ROSHAN — Frontend & Backend Integration (COMPLETED)
 - [x] **Project Structure & Git Organization:**
   - Defined clean MERN stack structure with separated `client/`, `server/`, and `docs/` directories.
   - Initialized root `package.json`, `.gitignore`, and unified dependency management.
@@ -79,3 +78,4 @@
 - [ ] **Advanced Filtering & Search:** Build multi-faceted filters allowing owners to filter by pet name, care category (`Vaccination`, `Medication`, `Grooming`), and custom date ranges.
 - [ ] **Urgent Alert Highlighting:** Implement visual urgency indicators (color-coded badges: Red for overdue, Yellow for due within 3 days, Green for upcoming).
 - [ ] **Edge Cases Testing:** Verify leap-year calculations, past date validations, and graceful empty states when no reminders are scheduled.
+

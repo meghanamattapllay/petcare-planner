@@ -4,7 +4,7 @@ const Pet = require('../models/Pet');
  * Controller: Pet Profiles CRUD
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
  * Roll: 2303A51803 · Branch: CSE
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 // In-memory store for instant demonstration when DB is connecting
@@ -229,3 +229,4 @@ module.exports = {
   updatePet,
   deletePet,
 };
+

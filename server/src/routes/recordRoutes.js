@@ -9,7 +9,7 @@ const {
 /**
  * Care Record Routes
  * Assigned: BODASU NITHIN & MATAPALLY MEGHANA
- * Integrated by Lead: Godishala Kruthik Roshan
+ * Integrated by: Godishala Kruthik Roshan
  */
 
 router.get('/', getRecords);
@@ -17,3 +17,4 @@ router.post('/', createRecord);
 router.delete('/:id', deleteRecord);
 
 module.exports = router;
+

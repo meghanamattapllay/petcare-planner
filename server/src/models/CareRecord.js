@@ -59,3 +59,4 @@ const careRecordSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('CareRecord', careRecordSchema);
+
