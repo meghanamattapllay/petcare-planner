@@ -512,6 +512,14 @@ function Dashboard({ user, onLogout }) {
 
         {error && <div className="error banner">{error}</div>}
 
+        {/* ADMIN PORTAL PAGE */}
+        {activePage === "Admin" && (
+          <AdminPortal
+            currentAdmin={user}
+            onSwitchToOwnerView={() => setActivePage("Overview")}
+          />
+        )}
+
         {/* CARE CALENDAR PAGE */}
         {activePage === "Care calendar" && <Reminders />}
 

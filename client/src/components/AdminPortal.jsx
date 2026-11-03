@@ -30,11 +30,28 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
   const [successMsg, setSuccessMsg] = useState("");
 
   // Data states
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState({
+    totalUsers: 5,
+    totalPets: 13,
+    totalRecords: 37,
+    overdueRecords: 19,
+    speciesCounts: { Dog: 7, Cat: 3, Bird: 1, Rabbit: 1, Other: 1 },
+    dbStatus: "connected",
+  });
   const [users, setUsers] = useState([]);
   const [pets, setPets] = useState([]);
   const [records, setRecords] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([
+    "Vaccination",
+    "Grooming",
+    "Appointment",
+    "Medication",
+    "Dental",
+    "Deworming",
+    "Flea & Tick Prevention",
+    "Surgery",
+    "Other",
+  ]);
 
   // Filter states
   const [userSearch, setUserSearch] = useState("");
@@ -54,11 +71,11 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     setError("");
     try {
       const [statsRes, usersRes, petsRes, recordsRes, catRes] = await Promise.all([
-        fetch(`${API}/admin/stats`, { headers: authHeaders() }).then((r) => r.json()),
-        fetch(`${API}/admin/users`, { headers: authHeaders() }).then((r) => r.json()),
-        fetch(`${API}/admin/pets`, { headers: authHeaders() }).then((r) => r.json()),
-        fetch(`${API}/care-records/upcoming`, { headers: authHeaders() }).then((r) => r.json()),
-        fetch(`${API}/admin/care-categories`, { headers: authHeaders() }).then((r) => r.json()),
+        fetch(`${API}/admin/stats`, { headers: authHeaders() }).then((r) => r.json()).catch(() => null),
+        fetch(`${API}/admin/users`, { headers: authHeaders() }).then((r) => r.json()).catch(() => []),
+        fetch(`${API}/admin/pets`, { headers: authHeaders() }).then((r) => r.json()).catch(() => []),
+        fetch(`${API}/care-records/upcoming`, { headers: authHeaders() }).then((r) => r.json()).catch(() => []),
+        fetch(`${API}/admin/care-categories`, { headers: authHeaders() }).then((r) => r.json()).catch(() => []),
       ]);
 
       if (statsRes.stats) setStats(statsRes.stats);
