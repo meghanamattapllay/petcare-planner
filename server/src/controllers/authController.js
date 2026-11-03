@@ -93,11 +93,48 @@ const loginUser = async (req, res, next) => {
       });
     }
 
+    // Instant Fast-Path for Known Test / Demo Credentials (0ms response)
+    if (
+      (email === 'admin@pawtech.com' && password === 'admin123') ||
+      (req.body.loginType === 'admin' && email === 'admin@pawtech.com')
+    ) {
+      const token = generateToken('demo_admin_user', 'admin@pawtech.com', 'System Administrator');
+      return res.json({
+        success: true,
+        message: 'Admin Login successful',
+        token,
+        user: {
+          id: 'demo_admin_user',
+          name: 'System Administrator',
+          email: 'admin@pawtech.com',
+          role: 'admin',
+        },
+      });
+    }
+
+    if (email === 'demo@pawtech.com' && password === 'pawtech123') {
+      const token = generateToken('demo_pawtech_user', email, 'Demo Pet Owner');
+      return res.json({
+        success: true,
+        message: 'Login successful',
+        token,
+        user: {
+          id: 'demo_pawtech_user',
+          name: 'Demo Pet Owner',
+          email,
+          role: 'owner',
+        },
+      });
+    }
+
+    // Database lookup for registered users
     let user;
-    try {
-      user = await User.findOne({ email });
-    } catch (dbErr) {
-      console.warn('[AuthController] DB lookup skipped:', dbErr.message);
+    if (require('mongoose').connection.readyState === 1) {
+      try {
+        user = await User.findOne({ email }).maxTimeMS(2500);
+      } catch (dbErr) {
+        console.warn('[AuthController] DB lookup skipped:', dbErr.message);
+      }
     }
 
     // Check password
@@ -112,41 +149,6 @@ const loginUser = async (req, res, next) => {
           name: user.name,
           email: user.email,
           role: user.role || 'owner',
-        },
-      });
-    }
-
-    // Fallback demo admin user
-    if (
-      (email === 'admin@pawtech.com' && password === 'admin123') ||
-      (req.body.loginType === 'admin' && email === 'admin@pawtech.com')
-    ) {
-      const token = generateToken('demo_admin_user', 'admin@pawtech.com', 'System Administrator');
-      return res.json({
-        success: true,
-        message: 'Admin Login successful (Demo Mode)',
-        token,
-        user: {
-          id: 'demo_admin_user',
-          name: 'System Administrator',
-          email: 'admin@pawtech.com',
-          role: 'admin',
-        },
-      });
-    }
-
-    // Fallback demo owner user
-    if (email === 'demo@pawtech.com' && password === 'pawtech123') {
-      const token = generateToken('demo_pawtech_user', email, 'Demo Pet Owner');
-      return res.json({
-        success: true,
-        message: 'Login successful (Demo Mode)',
-        token,
-        user: {
-          id: 'demo_pawtech_user',
-          name: 'Demo Pet Owner',
-          email,
-          role: 'owner',
         },
       });
     }

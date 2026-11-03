@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+// Prevent query buffering hangs when database connection is inactive
+mongoose.set('bufferCommands', false);
+mongoose.set('bufferTimeoutMS', 1500);
+
 /**
  * Connect to MongoDB instance with graceful error handling
  * Designed for PetCare Planner by PawTech Innovators
@@ -8,7 +12,8 @@ const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/petcare_planner';
     const conn = await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 4000,
+      connectTimeoutMS: 4000,
     });
     console.log(`[MongoDB] Connected Successfully: ${conn.connection.host}`);
     return true;
