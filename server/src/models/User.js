@@ -36,8 +36,18 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-module.exports = mongoose.model('User', userSchema);
+// Virtual alias for passwordHash to match project PDF specifications
+userSchema.virtual('passwordHash')
+  .get(function () {
+    return this.password;
+  })
+  .set(function (val) {
+    this.password = val;
+  });
 
+module.exports = mongoose.model('User', userSchema);

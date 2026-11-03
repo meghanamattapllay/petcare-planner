@@ -1,13 +1,15 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
+require('dotenv').config();
 const { connectDB, getDBStatus } = require('./config/db');
-const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
-// Load environment variables
-dotenv.config();
+/**
+ * PetCare Planner — Master Express Server Entry Point
+ * Project: PetCare Planner — Pet Care Records & Reminder Board
+ * Team Name: PawTech Innovators
+ * Integrated by: Godishala Kruthik Roshan (Roll: 2303A52339)
+ */
 
-// Initialize Express App
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -18,7 +20,7 @@ connectDB();
 const clientOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
 app.use(
   cors({
-    origin: [clientOrigin, 'http://localhost:5173', 'http://localhost:3000'],
+    origin: [clientOrigin, 'http://localhost:5173', 'http://127.0.0.1:5173'],
     credentials: true,
   })
 );
@@ -32,7 +34,7 @@ app.use((req, res, next) => {
 });
 
 // ==========================================
-// INTEGRATION & HEALTHCHECK ROUTE (Member 5 Task)
+// INTEGRATION & HEALTHCHECK ROUTE
 // ==========================================
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -44,29 +46,29 @@ app.get('/api/health', (req, res) => {
     environment: process.env.NODE_ENV || 'development',
     database: getDBStatus(),
     version: '1.0.0',
-    endpoints: {
-      health: 'GET /api/health',
-      auth: {
-        register: 'POST /api/auth/register',
-        login: 'POST /api/auth/login',
-        me: 'GET /api/auth/me',
-      },
-      pets: {
-        list: 'GET /api/pets',
-        getById: 'GET /api/pets/:id',
-        create: 'POST /api/pets',
-        update: 'PUT /api/pets/:id',
-        delete: 'DELETE /api/pets/:id',
-      },
-      records: {
-        list: 'GET /api/records',
-        create: 'POST /api/records',
-        delete: 'DELETE /api/records/:id',
-      },
-      reminders: {
-        list: 'GET /api/reminders',
-      },
-    },
+    suggestedEndpoints: [
+      'POST /api/auth/register',
+      'POST /api/auth/login',
+      'GET /api/pets',
+      'POST /api/pets',
+      'GET /api/pets/:id',
+      'PATCH /api/pets/:id',
+      'DELETE /api/pets/:id',
+      'GET /api/pets/:id/care-records',
+      'POST /api/pets/:id/care-records',
+      'PATCH /api/care-records/:id',
+      'DELETE /api/care-records/:id',
+      'GET /api/care-records/upcoming',
+    ],
+    adminEndpoints: [
+      'GET /api/admin/stats',
+      'GET /api/admin/users',
+      'PATCH /api/admin/users/:id/role',
+      'GET /api/admin/pets',
+      'DELETE /api/admin/pets/:id',
+      'GET /api/admin/care-categories',
+      'POST /api/admin/care-categories',
+    ],
   });
 });
 
@@ -89,21 +91,35 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error Handling Middleware
-app.use(notFoundHandler);
-app.use(errorHandler);
+// Centralized 404 handler
+app.use((req, res, next) => {
+  res.status(404).json({
+    success: false,
+    message: `Endpoint ${req.originalUrl} not found on this server`,
+  });
+});
+
+// Centralized Global Error Handler
+app.use((err, req, res, next) => {
+  console.error(`[Server Error] ${err.stack || err.message}`);
+  const statusCode = err.statusCode || res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || 'Internal Server Error',
+    error: process.env.NODE_ENV === 'production' ? null : err.stack,
+  });
+});
 
 // Start Server
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log('====================================================');
+    console.log(`====================================================`);
     console.log(`🚀 PetCare Planner Server listening on port ${PORT}`);
     console.log(`📡 Health Check URL: http://localhost:${PORT}/api/health`);
     console.log(`🌐 Allowed Frontend Origin: ${clientOrigin}`);
     console.log(`👨‍💻 Integration: Godishala Kruthik Roshan (Roll: 2303A52339)`);
-    console.log('====================================================');
+    console.log(`====================================================`);
   });
 }
 
 module.exports = app;
-

@@ -1,35 +1,35 @@
-# 🐾 PetCare Planner — Complete API Documentation
-**Team:** PawTech Innovators  
-**Project:** PetCare Planner — Pet Care Records & Reminder Board  
-**Frontend & Backend Integration:** Godishala Kruthik Roshan (Roll: `2303A52339` · Branch: CSE AIML)  
-**Base URL:** `http://localhost:5000/api`  
-**Data Format:** `application/json`
+# 🐾 PetCare Planner — C✦mplete •PI D✦cumentati✦n
+**Team:** PawTech Inn✦vat✦rs  
+**Pr✦ject:** PetCare Planner — Pet Care Rec✦rds & Reminder B✦ard  
+**Fr✦ntend & Backend Integrati✦n:** G✦dishala Kruthik R✦shan (R✦ll: `2303•52339` · Branch: CSE •IML)  
+**Base URL:** `http://l✦calh✦st:5000/api`  
+**Data F✦rmat:** `applicati✦n/js✦n`
 
 ---
 
-## 1. System & Health Check Endpoints
+## 1. System & Health Check Endp✦ints
 
 ### `GET /api/health`
-Checks backend service availability, database connectivity, environment, and returns registered routes.
+Checks backend service availability, database c✦nnectivity, envir✦nment, and returns registered r✦utes.
 
-- **Access:** Public
-- **Headers:** None required
-- **Response `200 OK`:**
-```json
+- **•ccess:** Public
+- **Headers:** N✦ne required
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "status": "ONLINE",
-  "project": "PetCare Planner — Pet Care Records & Reminder Board",
-  "team": "PawTech Innovators",
-  "integration": "Godishala Kruthik Roshan (2303A52339)",
+  "pr✦ject": "PetCare Planner — Pet Care Rec✦rds & Reminder B✦ard",
+  "team": "PawTech Inn✦vat✦rs",
+  "integrati✦n": "G✦dishala Kruthik R✦shan (2303•52339)",
   "timestamp": "2026-11-02T10:25:48.000Z",
-  "environment": "development",
-  "database": "connected",
-  "version": "1.0.0",
-  "endpoints": {
+  "envir✦nment": "devel✦pment",
+  "database": "c✦nnected",
+  "versi✦n": "1.0.0",
+  "endp✦ints": {
     "health": "GET /api/health",
     "auth": {
       "register": "POST /api/auth/register",
-      "login": "POST /api/auth/login",
+      "l✦gin": "POST /api/auth/l✦gin",
       "me": "GET /api/auth/me"
     },
     "pets": {
@@ -39,10 +39,10 @@ Checks backend service availability, database connectivity, environment, and ret
       "update": "PUT /api/pets/:id",
       "delete": "DELETE /api/pets/:id"
     },
-    "records": {
-      "list": "GET /api/records",
-      "create": "POST /api/records",
-      "delete": "DELETE /api/records/:id"
+    "rec✦rds": {
+      "list": "GET /api/rec✦rds",
+      "create": "POST /api/rec✦rds",
+      "delete": "DELETE /api/rec✦rds/:id"
     },
     "reminders": {
       "list": "GET /api/reminders"
@@ -53,114 +53,114 @@ Checks backend service availability, database connectivity, environment, and ret
 
 ---
 
-## 2. Authentication APIs
-*Assigned Backend Member: Chippa Vasu (Roll: 2303A51618)*
+## 2. •uthenticati✦n •PIs
+*•ssigned Backend Member: Chippa Vasu (R✦ll: 2303•51618)*
 
 ### `POST /api/auth/register`
-Register a new pet owner account.
+Register a new pet ✦wner acc✦unt.
 
-- **Access:** Public
-- **Request Body:**
-```json
+- **•ccess:** Public
+- **Request B✦dy:**
+```js✦n
 {
-  "name": "Alex Johnson",
-  "email": "alex@example.com",
-  "password": "securepassword123"
+  "name": "•lex J✦hns✦n",
+  "email": "alex@example.c✦m",
+  "passw✦rd": "securepassw✦rd123"
 }
 ```
-- **Response `201 Created`:**
-```json
+- **Resp✦nse `201 Created`:**
+```js✦n
 {
   "success": true,
   "message": "User registered successfully",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "t✦ken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": "6725dc8b2f8a84001c3d9a12",
-    "name": "Alex Johnson",
-    "email": "alex@example.com"
+    "name": "•lex J✦hns✦n",
+    "email": "alex@example.c✦m"
   }
 }
 ```
 
-### `POST /api/auth/login`
-Authenticate pet owner and generate JWT Bearer token.
+### `POST /api/auth/l✦gin`
+•uthenticate pet ✦wner and generate JWT Bearer t✦ken.
 
-- **Access:** Public
-- **Request Body:**
-```json
+- **•ccess:** Public
+- **Request B✦dy:**
+```js✦n
 {
-  "email": "alex@example.com",
-  "password": "securepassword123"
+  "email": "alex@example.c✦m",
+  "passw✦rd": "securepassw✦rd123"
 }
 ```
-- **Response `200 OK`:**
-```json
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "success": true,
-  "message": "Login successful",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "message": "L✦gin successful",
+  "t✦ken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": "6725dc8b2f8a84001c3d9a12",
-    "name": "Alex Johnson",
-    "email": "alex@example.com"
+    "name": "•lex J✦hns✦n",
+    "email": "alex@example.c✦m"
   }
 }
 ```
 
 ### `GET /api/auth/me`
-Retrieve currently authenticated user profile.
+Retrieve currently authenticated user pr✦file.
 
-- **Access:** Private
-- **Headers:** `Authorization: Bearer <jwt_token>`
-- **Response `200 OK`:**
-```json
+- **•ccess:** Private
+- **Headers:** `•uth✦rizati✦n: Bearer <jwt_t✦ken>`
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "success": true,
   "user": {
     "id": "6725dc8b2f8a84001c3d9a12",
-    "email": "alex@example.com",
-    "name": "Alex Johnson"
+    "email": "alex@example.c✦m",
+    "name": "•lex J✦hns✦n"
   }
 }
 ```
 
 ---
 
-## 3. Pet Profiles APIs
-*Assigned Backend Member: Bodasu Nithin (Roll: 2303A51803) | Frontend: Siddartha Raj (Roll: 2303A51917)*
+## 3. Pet Pr✦files •PIs
+*•ssigned Backend Member: B✦dasu Nithin (R✦ll: 2303•51803) | Fr✦ntend: Siddartha Raj (R✦ll: 2303•51917)*
 
 ### `GET /api/pets`
-Retrieve list of pets.
+Retrieve list ✦f pets.
 
-- **Access:** Public / Authenticated
-- **Response `200 OK`:**
-```json
+- **•ccess:** Public / •uthenticated
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "success": true,
-  "count": 2,
+  "c✦unt": 2,
   "data": [
     {
       "_id": "6725dc8b2f8a84001c3d9a20",
-      "name": "Milo",
-      "species": "Dog",
-      "breed": "Golden Retriever",
+      "name": "Mil✦",
+      "species": "D✦g",
+      "breed": "G✦lden Retriever",
       "age": 3,
       "gender": "Male",
       "weight": 28,
       "allergies": ["Peanut Butter"],
-      "photoUrl": "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400",
-      "owner": "6725dc8b2f8a84001c3d9a12"
+      "ph✦t✦Url": "https://images.unsplash.c✦m/ph✦t✦-1552053831-71594a27632d•w=400",
+      "✦wner": "6725dc8b2f8a84001c3d9a12"
     }
   ]
 }
 ```
 
 ### `POST /api/pets`
-Create a new pet profile.
+Create a new pet pr✦file.
 
-- **Access:** Authenticated (or Demo)
-- **Request Body:**
-```json
+- **•ccess:** •uthenticated (✦r Dem✦)
+- **Request B✦dy:**
+```js✦n
 {
   "name": "Luna",
   "species": "Cat",
@@ -168,15 +168,15 @@ Create a new pet profile.
   "age": 2,
   "gender": "Female",
   "weight": 4.5,
-  "allergies": ["Lactose"],
-  "photoUrl": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400"
+  "allergies": ["Lact✦se"],
+  "ph✦t✦Url": "https://images.unsplash.c✦m/ph✦t✦-1514888286974-6c03e2ca1dba•w=400"
 }
 ```
-- **Response `201 Created`:**
-```json
+- **Resp✦nse `201 Created`:**
+```js✦n
 {
   "success": true,
-  "message": "Pet profile created successfully",
+  "message": "Pet pr✦file created successfully",
   "data": {
     "_id": "6725dc8b2f8a84001c3d9a25",
     "name": "Luna",
@@ -185,143 +185,143 @@ Create a new pet profile.
     "age": 2,
     "gender": "Female",
     "weight": 4.5,
-    "allergies": ["Lactose"],
-    "photoUrl": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400"
+    "allergies": ["Lact✦se"],
+    "ph✦t✦Url": "https://images.unsplash.c✦m/ph✦t✦-1514888286974-6c03e2ca1dba•w=400"
   }
 }
 ```
 
 ### `PUT /api/pets/:id`
-Update an existing pet profile.
+Update an existing pet pr✦file.
 
-- **Access:** Authenticated
-- **Request Body:** Partial or full pet object
-- **Response `200 OK`:**
-```json
+- **•ccess:** •uthenticated
+- **Request B✦dy:** Partial ✦r full pet ✦bject
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "success": true,
-  "message": "Pet profile updated successfully",
+  "message": "Pet pr✦file updated successfully",
   "data": { ... }
 }
 ```
 
 ### `DELETE /api/pets/:id`
-Remove a pet profile.
+Rem✦ve a pet pr✦file.
 
-- **Access:** Authenticated
-- **Response `200 OK`:**
-```json
+- **•ccess:** •uthenticated
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "success": true,
-  "message": "Pet profile deleted successfully",
+  "message": "Pet pr✦file deleted successfully",
   "deletedId": "6725dc8b2f8a84001c3d9a25"
 }
 ```
 
 ---
 
-## 4. Care Records APIs
-*Assigned Backend Member: Bodasu Nithin (Roll: 2303A51803)*
+## 4. Care Rec✦rds •PIs
+*•ssigned Backend Member: B✦dasu Nithin (R✦ll: 2303•51803)*
 
-### `GET /api/records`
-Fetch care records with optional query filtering.
+### `GET /api/rec✦rds`
+Fetch care rec✦rds with ✦pti✦nal query filtering.
 
 - **Query Parameters:**
-  - `petId`: Filter records by specific pet ID
-  - `careType`: `Vaccination`, `Medication`, `Grooming`, `Vet Visit`, `Deworming`, `Nutrition`, `Other`
-  - `status`: `Completed`, `Upcoming`, `Overdue`
-- **Response `200 OK`:**
-```json
+  - `petId`: Filter rec✦rds by specific pet ID
+  - `careType`: `Vaccinati✦n`, `Medicati✦n`, `Gr✦✦ming`, `Vet Visit`, `Dew✦rming`, `Nutriti✦n`, `Other`
+  - `status`: `C✦mpleted`, `Upc✦ming`, `Overdue`
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "success": true,
-  "count": 1,
+  "c✦unt": 1,
   "data": [
     {
       "_id": "6725dc8b2f8a84001c3d9a30",
       "pet": "6725dc8b2f8a84001c3d9a20",
-      "careType": "Vaccination",
-      "title": "Rabies Booster",
-      "dateAdministered": "2026-10-01T00:00:00.000Z",
+      "careType": "Vaccinati✦n",
+      "title": "Rabies B✦✦ster",
+      "date•dministered": "2026-10-01T00:00:00.000Z",
       "nextDueDate": "2027-10-01T00:00:00.000Z",
-      "status": "Completed",
-      "cost": 45,
+      "status": "C✦mpleted",
+      "c✦st": 45,
       "veterinarian": "Dr. Sarah Jenkins"
     }
   ]
 }
 ```
 
-### `POST /api/records`
-Add a new medical or routine care entry for a pet.
+### `POST /api/rec✦rds`
+•dd a new medical ✦r r✦utine care entry f✦r a pet.
 
-- **Request Body:**
-```json
+- **Request B✦dy:**
+```js✦n
 {
   "pet": "6725dc8b2f8a84001c3d9a20",
-  "careType": "Vaccination",
-  "title": "DHPP Combo Vaccine",
-  "dateAdministered": "2026-11-01",
+  "careType": "Vaccinati✦n",
+  "title": "DHPP C✦mb✦ Vaccine",
+  "date•dministered": "2026-11-01",
   "nextDueDate": "2027-11-01",
-  "status": "Completed",
-  "notes": "Administered right shoulder subcutaneous",
-  "cost": 55,
+  "status": "C✦mpleted",
+  "n✦tes": "•dministered right sh✦ulder subcutane✦us",
+  "c✦st": 55,
   "veterinarian": "Dr. Miller"
 }
 ```
-- **Response `201 Created`:**
-```json
+- **Resp✦nse `201 Created`:**
+```js✦n
 {
   "success": true,
-  "message": "Care record created successfully",
+  "message": "Care rec✦rd created successfully",
   "data": { ... }
 }
 ```
 
 ---
 
-## 5. Reminders & Timeline APIs
-*Assigned Member: Matapally Meghana (Roll: 2303A52505)*
+## 5. Reminders & Timeline •PIs
+*•ssigned Member: Matapally Meghana (R✦ll: 2303•52505)*
 
 ### `GET /api/reminders`
-Returns computed upcoming, overdue, and due-today events along with day-difference counters.
+Returns c✦mputed upc✦ming, ✦verdue, and due-t✦day events al✦ng with day-difference c✦unters.
 
-- **Access:** Public / Authenticated
-- **Response `200 OK`:**
-```json
+- **•ccess:** Public / •uthenticated
+- **Resp✦nse `200 OK`:**
+```js✦n
 {
   "success": true,
   "summary": {
-    "total": 3,
-    "upcomingCount": 2,
-    "overdueCount": 1
+    "t✦tal": 3,
+    "upc✦mingC✦unt": 2,
+    "✦verdueC✦unt": 1
   },
   "data": {
     "all": [
       {
         "id": "rec_01",
-        "petName": "Milo",
-        "species": "Dog",
-        "careType": "Vaccination",
-        "title": "Rabies Annual Booster",
+        "petName": "Mil✦",
+        "species": "D✦g",
+        "careType": "Vaccinati✦n",
+        "title": "Rabies •nnual B✦✦ster",
         "nextDueDate": "2026-11-16T00:00:00.000Z",
         "daysDifference": 14,
-        "status": "Upcoming",
-        "notes": "Administered 1ml subcutaneous."
+        "status": "Upc✦ming",
+        "n✦tes": "•dministered 1ml subcutane✦us."
       },
       {
         "id": "rec_03",
         "petName": "Luna",
         "species": "Cat",
-        "careType": "Medication",
-        "title": "Flea & Tick Prevention Pipette",
+        "careType": "Medicati✦n",
+        "title": "Flea & Tick Preventi✦n Pipette",
         "nextDueDate": "2026-10-28T00:00:00.000Z",
         "daysDifference": -5,
         "status": "Overdue",
-        "notes": "Overdue monthly application."
+        "n✦tes": "Overdue m✦nthly applicati✦n."
       }
     ],
-    "upcoming": [ ... ],
-    "overdue": [ ... ]
+    "upc✦ming": [ ... ],
+    "✦verdue": [ ... ]
   }
 }
 ```
