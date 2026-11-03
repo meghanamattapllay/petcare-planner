@@ -97,10 +97,17 @@ const speciesGalleries = {
 const getPetImage = (pet) => {
   if (!pet) return speciesGalleries.Dog[0];
 
-  const defaultPlaceholder = "photo-1543466835-00a7907e9de1";
-  // If user provided a custom photo that is not the generic beagle default, use it
-  if (pet.photoUrl && String(pet.photoUrl).startsWith("http") && !pet.photoUrl.includes(defaultPlaceholder)) {
-    return pet.photoUrl;
+  const customUrl = (pet.photoUrl || "").trim();
+  // Always prioritize and display the user's custom added photo URL
+  if (
+    customUrl &&
+    (customUrl.startsWith("http://") ||
+      customUrl.startsWith("https://") ||
+      customUrl.startsWith("//") ||
+      customUrl.startsWith("data:") ||
+      customUrl.startsWith("/"))
+  ) {
+    return customUrl;
   }
 
   // 1. Try matching breed
@@ -655,17 +662,7 @@ function Dashboard({ user, onLogout }) {
                     </button>
                   </div>
 
-                  <div className="profile-dropdown-footer">
-                    <button
-                      className="profile-logout-btn"
-                      onClick={() => {
-                        setShowProfileMenu(false);
-                        logout();
-                      }}
-                    >
-                      <LogOut size={15} /> Sign out
-                    </button>
-                  </div>
+
                 </div>
               )}
             </div>
@@ -1059,7 +1056,7 @@ function PetDetails({ pet, onClose, onEdit, onDelete, onAddCareRecord }) {
           <Plus size={17} /> Add care record
         </button>
 
-        <CareTimeline pet={pet} key={`${pet._id}_${records.length}`} />
+        <CareTimeline pet={pet} key={pet._id} />
       </section>
     </div>
   );

@@ -180,7 +180,7 @@ const createPet = async (req, res, next) => {
         : typeof allergies === 'string' && allergies.length > 0
         ? allergies.split(',').map((s) => s.trim())
         : [],
-      photoUrl: photoUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+      photoUrl: photoUrl ? String(photoUrl).trim() : '',
       owner: ownerId,
     };
 

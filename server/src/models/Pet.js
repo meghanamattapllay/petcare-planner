@@ -44,10 +44,11 @@ const petSchema = new mongoose.Schema(
     },
     photoUrl: {
       type: String,
-      default: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+      default: '',
+      trim: true,
     },
     owner: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.Mixed,
       ref: 'User',
       required: [true, 'Pet owner is required'],
     },
@@ -59,17 +60,12 @@ const petSchema = new mongoose.Schema(
   }
 );
 
-// Virtual for backward-compatibility with code expecting ownerId
-petSchema.virtual('ownerId').get(function () {
-  return this.owner;
-});
-
-// Pre-save hook: auto-fill owner if ownerId is passed
-petSchema.pre('validate', function (next) {
-  if (!this.owner && this.get('ownerId')) {
-    this.owner = this.get('ownerId');
-  }
-  next();
+// Virtual populate for care records linked to this pet
+petSchema.virtual('careRecords', {
+  ref: 'CareRecord',
+  localField: '_id',
+  foreignField: 'pet',
+  justOne: false,
 });
 
 module.exports = mongoose.model('Pet', petSchema);
