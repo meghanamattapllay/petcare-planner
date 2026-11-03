@@ -26,7 +26,7 @@ import CareTimeline from "./components/CareTimeline";
 import Reminders from "./components/Reminders";
 import AdminPortal from "./components/AdminPortal";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API = import.meta.env.VITE_API_URL || (typeof window !== "undefined" && window.location.origin.includes(":5173") ? "http://localhost:5000/api" : "/api");
 const emptyPet = { name: "", species: "Dog", breed: "", birthDate: "", notes: "", photoUrl: "" };
 const breedKeywords = {
   // Dogs

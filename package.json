@@ -4,9 +4,10 @@
   "description": "PetCare Planner — Pet Care Records & Reminder Board by PawTech Innovators",
   "scripts": {
     "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "build": "npm --prefix client install && npm --prefix client run build && npm --prefix server install",
+    "start": "node server/src/server.js",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
-    "start": "node server/src/server.js",
     "build:client": "cd client && npm run build"
   },
   "keywords": [
@@ -20,4 +21,3 @@
   "author": "PawTech Innovators",
   "license": "ISC"
 }
-

@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 const { connectDB, getDBStatus } = require('./config/db');
 
@@ -16,11 +18,13 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-// Core Middleware
-const clientOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+// Core Middleware & CORS (Permissive in production for Vercel/Render deployments)
 app.use(
   cors({
-    origin: [clientOrigin, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl) or any origin
+      callback(null, true);
+    },
     credentials: true,
   })
 );
@@ -82,16 +86,31 @@ app.use('/api/care-records', require('./routes/recordRoutes'));
 app.use('/api/reminders', require('./routes/reminderRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
-// Root Fallback Info
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to the PetCare Planner Backend API Server',
-    healthCheck: '/api/health',
-    team: 'PawTech Innovators',
-  });
-});
+// ==========================================
+// STATIC FRONTEND SERVING (For Monorepo Production Deployments)
+// ==========================================
+const distPath = path.join(__dirname, '../../client/dist');
+const altDistPath = path.join(__dirname, '../client/dist');
+const clientDist = fs.existsSync(distPath) ? distPath : (fs.existsSync(altDistPath) ? altDistPath : null);
 
-// Centralized 404 handler
+if (clientDist) {
+  app.use(express.static(clientDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+} else {
+  // Root Fallback Info when client is not built locally
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Welcome to the PetCare Planner Backend API Server',
+      healthCheck: '/api/health',
+      team: 'PawTech Innovators',
+    });
+  });
+}
+
+// Centralized 404 handler for API routes
 app.use((req, res, next) => {
   res.status(404).json({
     success: false,
@@ -116,7 +135,6 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`====================================================`);
     console.log(`🚀 PetCare Planner Server listening on port ${PORT}`);
     console.log(`📡 Health Check URL: http://localhost:${PORT}/api/health`);
-    console.log(`🌐 Allowed Frontend Origin: ${clientOrigin}`);
     console.log(`👨‍💻 Integration: Godishala Kruthik Roshan (Roll: 2303A52339)`);
     console.log(`====================================================`);
   });

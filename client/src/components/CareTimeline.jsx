@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CalendarDays, Clock, PawPrint } from "lucide-react";
 
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API = import.meta.env.VITE_API_URL || (typeof window !== "undefined" && window.location.origin.includes(":5173") ? "http://localhost:5000/api" : "/api");
 
 const CareTimeline = ({ pet }) => {
     const [records, setRecords] = useState([]);
