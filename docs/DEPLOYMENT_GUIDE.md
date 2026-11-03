@@ -91,3 +91,4 @@ This option hosts **both** the React frontend and Express backend under a single
 - [x] Pet owner user can register, login, create a pet, and add care reminders.
 - [x] Admin can sign in using `admin@pawtech.com` / `admin123` and view the Admin Command Center.
 - [x] In-app care reminders calculate upcoming and overdue dates accurately.
+
