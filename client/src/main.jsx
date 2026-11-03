@@ -358,6 +358,7 @@ function Dashboard({ user, onLogout }) {
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const load = async () => {
@@ -521,7 +522,10 @@ function Dashboard({ user, onLogout }) {
               <button
                 className={`icon-btn ${showNotifications ? "active" : ""}`}
                 title="Care Notifications"
-                onClick={() => setShowNotifications(!showNotifications)}
+                onClick={() => {
+                  setShowNotifications(!showNotifications);
+                  setShowProfileMenu(false);
+                }}
               >
                 <Bell size={19} />
                 {overdue > 0 && <i />}
@@ -570,13 +574,90 @@ function Dashboard({ user, onLogout }) {
               )}
             </div>
 
-            <button
-              className="avatar"
-              title={`${user.name} - Open navigation`}
-              onClick={() => setSidebarOpen(true)}
-            >
-              {user.name[0]}
-            </button>
+            <div className="profile-wrapper">
+              <button
+                className={`avatar ${showProfileMenu ? "active" : ""}`}
+                title={`${user.name} Profile`}
+                onClick={() => {
+                  setShowProfileMenu(!showProfileMenu);
+                  setShowNotifications(false);
+                }}
+              >
+                {user.name[0]?.toUpperCase() || "U"}
+              </button>
+
+              {showProfileMenu && (
+                <div className="profile-dropdown">
+                  <div className="profile-dropdown-header">
+                    <div className="profile-avatar-large">
+                      {user.name[0]?.toUpperCase() || "U"}
+                    </div>
+                    <div className="profile-info">
+                      <h4>{user.name}</h4>
+                      <p className="profile-email">{user.email}</p>
+                      <span className={`profile-badge ${user.role === "admin" ? "admin" : "owner"}`}>
+                        {user.role === "admin" ? "System Administrator" : "Pet Owner"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="profile-stats-row">
+                    <div className="profile-stat-box">
+                      <span className="profile-stat-val">{pets.length}</span>
+                      <span className="profile-stat-lbl">Pets</span>
+                    </div>
+                    <div className="profile-stat-box">
+                      <span className="profile-stat-val">{records.length}</span>
+                      <span className="profile-stat-lbl">Care Records</span>
+                    </div>
+                  </div>
+
+                  <div className="profile-dropdown-menu">
+                    {user.role === "admin" && (
+                      <button
+                        className="profile-menu-item"
+                        onClick={() => {
+                          setActivePage("Admin");
+                          setShowProfileMenu(false);
+                        }}
+                      >
+                        <Shield size={16} /> Admin Command Center
+                      </button>
+                    )}
+                    <button
+                      className="profile-menu-item"
+                      onClick={() => {
+                        setActivePage("My pets");
+                        setShowProfileMenu(false);
+                      }}
+                    >
+                      <PawPrint size={16} /> My Pets ({pets.length})
+                    </button>
+                    <button
+                      className="profile-menu-item"
+                      onClick={() => {
+                        setActivePage("Care calendar");
+                        setShowProfileMenu(false);
+                      }}
+                    >
+                      <CalendarDays size={16} /> Care Calendar & Reminders
+                    </button>
+                  </div>
+
+                  <div className="profile-dropdown-footer">
+                    <button
+                      className="profile-logout-btn"
+                      onClick={() => {
+                        setShowProfileMenu(false);
+                        logout();
+                      }}
+                    >
+                      <LogOut size={15} /> Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
@@ -849,8 +930,10 @@ function Dashboard({ user, onLogout }) {
           pet={modal.pet}
           onClose={() => setModal(null)}
           onSaved={() => {
+            const petRef = modal.pet;
             setModal(null);
             load();
+            setSelected(petRef);
           }}
         />
       )}
@@ -965,7 +1048,7 @@ function PetDetails({ pet, onClose, onEdit, onDelete, onAddCareRecord }) {
           <Plus size={17} /> Add care record
         </button>
 
-        <CareTimeline pet={pet} />
+        <CareTimeline pet={pet} key={`${pet._id}_${records.length}`} />
       </section>
     </div>
   );

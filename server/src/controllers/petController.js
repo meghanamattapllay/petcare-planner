@@ -1,5 +1,7 @@
 const Pet = require('../models/Pet');
 const CareRecord = require('../models/CareRecord');
+const { mockRecords, addMockRecord } = require('./recordController');
+const mongoose = require('mongoose');
 
 /**
  * Controller: Pet Profiles CRUD & Pet Care Records
@@ -205,15 +207,32 @@ const getPetCareRecords = async (req, res, next) => {
     const { id } = req.params;
     let records = [];
 
-    try {
-      records = await CareRecord.find({
-        $or: [{ petId: id }, { pet: id }],
-      }).sort({ eventDate: -1, dateAdministered: -1 });
-    } catch (err) {
-      records = [];
+    if (mongoose.connection.readyState === 1) {
+      try {
+        const query = { $or: [{ petId: id }, { pet: id }] };
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          const objId = new mongoose.Types.ObjectId(id);
+          query.$or.push({ petId: objId }, { pet: objId });
+        }
+        records = await CareRecord.find(query).sort({ eventDate: -1, dateAdministered: -1 });
+      } catch (err) {
+        console.warn('[getPetCareRecords] DB error:', err.message);
+      }
     }
 
-    res.json(records);
+    const combined = [...records.map((r) => (r.toObject ? r.toObject() : r))];
+    mockRecords.forEach((m) => {
+      const targetId = m.petId?._id || m.petId || m.pet?._id || m.pet;
+      if (String(targetId) === String(id)) {
+        if (!combined.some((c) => String(c._id) === String(m._id))) {
+          combined.push(m);
+        }
+      }
+    });
+
+    combined.sort((a, b) => new Date(b.eventDate || b.createdAt) - new Date(a.eventDate || a.createdAt));
+
+    res.json(combined);
   } catch (error) {
     next(error);
   }
@@ -231,38 +250,56 @@ const createPetCareRecord = async (req, res, next) => {
     }
 
     const ownerId = req.user ? req.user.id : 'demo_owner';
-    let record;
+    const petObj = mockPets.find((p) => String(p._id) === String(id));
+    const petMeta = petObj ? { _id: petObj._id, name: petObj.name, species: petObj.species } : { _id: id, name: 'Pet' };
 
-    try {
-      record = await CareRecord.create({
-        petId: id,
-        pet: id,
+    let record;
+    if (mongoose.connection.readyState === 1) {
+      try {
+        record = await CareRecord.create({
+          petId: id,
+          pet: id,
+          ownerId,
+          owner: ownerId,
+          careType,
+          title,
+          eventDate: eventDate || new Date(),
+          dateAdministered: eventDate || new Date(),
+          nextDueDate: nextDueDate ? new Date(nextDueDate) : undefined,
+          status: nextDueDate && new Date(nextDueDate) < new Date() ? 'overdue' : 'upcoming',
+          notes: notes || '',
+          providerName: providerName || '',
+          cost: Number(cost) || 0,
+        });
+      } catch (err) {
+        console.warn('[createPetCareRecord] DB create failed:', err.message);
+      }
+    }
+
+    if (!record) {
+      record = {
+        _id: 'rec_' + Date.now(),
+        petId: petMeta,
+        pet: petMeta,
         ownerId,
-        owner: ownerId,
         careType,
         title,
-        eventDate: eventDate || new Date(),
-        dateAdministered: eventDate || new Date(),
-        nextDueDate: nextDueDate || undefined,
+        eventDate: eventDate || new Date().toISOString(),
+        dateAdministered: eventDate || new Date().toISOString(),
+        nextDueDate: nextDueDate ? new Date(nextDueDate).toISOString() : null,
+        status: nextDueDate && new Date(nextDueDate) < new Date() ? 'overdue' : 'upcoming',
         notes: notes || '',
         providerName: providerName || '',
         cost: Number(cost) || 0,
-      });
-    } catch (err) {
-      record = {
-        _id: 'rec_' + Date.now(),
-        petId: id,
-        pet: id,
-        ownerId,
-        careType,
-        title,
-        eventDate: eventDate || new Date(),
-        nextDueDate,
-        notes,
-        providerName,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       };
+    } else {
+      if (record.toObject) record = record.toObject();
+      record.petId = petMeta;
+      record.pet = petMeta;
     }
+
+    addMockRecord(record);
 
     res.status(201).json(record);
   } catch (error) {
