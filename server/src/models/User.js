@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 
-/**
- * User MongoDB Model Schema
- * Assigned Member: CHIPPA VASU (Backend: Authentication)
- * Roll Number: 2303A51618
- */
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -19,7 +14,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+        /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
         'Please enter a valid email address',
       ],
     },
@@ -27,6 +22,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide a password'],
       minlength: [6, 'Password must be at least 6 characters long'],
+      select: false,
     },
     role: {
       type: String,
@@ -40,4 +36,3 @@ const userSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('User', userSchema);
-

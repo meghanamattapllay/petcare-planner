@@ -1,44 +1,37 @@
 const jwt = require('jsonwebtoken');
+const getJwtSecret = require('../config/jwt');
 
-/**
- * Authentication & Authorization Middleware
- * Assigned to: CHIPPA VASU (Backend: Authentication - Roll: 2303A51618)
- * Coordinated by: Godishala Kruthik Roshan (Integration - Roll: 2303A52339)
- */
+const protect = (req, res, next) => {
+  const authorization = req.get('authorization');
+  const bearerMatch =
+    typeof authorization === 'string'
+      ? authorization.match(/^Bearer\s+(\S+)$/i)
+      : null;
 
-const protect = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET || 'dev_jwt_secret_key_12345'
-      );
-
-      // Attach user payload to request
-      req.user = decoded;
-      return next();
-    } catch (error) {
-      console.error('[AuthMiddleware] Token verification failed:', error.message);
-      return res.status(401).json({
-        success: false,
-        message: 'Not authorized, token validation failed',
-      });
-    }
-  }
-
-  if (!token) {
+  if (!bearerMatch) {
     return res.status(401).json({
       success: false,
       message: 'Not authorized, no bearer token provided',
     });
   }
+
+  let secret;
+  try {
+    secret = getJwtSecret();
+  } catch (error) {
+    return next(error);
+  }
+
+  try {
+    const decoded = jwt.verify(bearerMatch[1], secret);
+    req.user = decoded;
+    return next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorized, token validation failed',
+    });
+  }
 };
 
 module.exports = { protect };
-
