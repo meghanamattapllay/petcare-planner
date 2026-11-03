@@ -2411,3 +2411,23 @@ button {
     color: #799086;
     grid-column: 1 / -1;
 }
+
+
+/* Demo Credentials Pill Helper */
+.demo-credentials-pill {
+    background: #f0f7f4;
+    border: 1px dashed #b7d6ca;
+    color: #2b6151;
+    font-size: 11.5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 8px 0 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.demo-credentials-pill:hover {
+    background: #e3f2ec;
+    border-color: #3b6d60;
+}
