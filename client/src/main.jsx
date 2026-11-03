@@ -442,12 +442,23 @@ function Dashboard({ user, onLogout }) {
     }
   };
 
-  const due = records.filter(
-    (record) => record.status === "upcoming"
+  // Filter records to only those belonging to the logged-in user's companions
+  const myRecords = useMemo(() => {
+    if (user?.role === "admin") return records;
+    if (!pets || pets.length === 0) return [];
+    const petIdSet = new Set(pets.map((p) => String(p._id)));
+    return records.filter((r) => {
+      const pid = String(r.petId?._id || r.petId || r.pet?._id || r.pet);
+      return petIdSet.has(pid);
+    });
+  }, [pets, records, user]);
+
+  const due = myRecords.filter(
+    (record) => (record.status || "").toLowerCase() === "upcoming"
   ).length;
 
-  const overdue = records.filter(
-    (record) => record.status === "overdue"
+  const overdue = myRecords.filter(
+    (record) => (record.status || "").toLowerCase() === "overdue"
   ).length;
 
   return (
@@ -581,7 +592,7 @@ function Dashboard({ user, onLogout }) {
                     <span className="notifications-count">{overdue} Needs attention</span>
                   </div>
                   <div className="notifications-list">
-                    {records.slice(0, 6).map((r) => (
+                    {myRecords.slice(0, 6).map((r) => (
                       <div
                         key={r._id}
                         className="notification-item"
@@ -599,7 +610,7 @@ function Dashboard({ user, onLogout }) {
                         </div>
                       </div>
                     ))}
-                    {!records.length && (
+                    {!myRecords.length && (
                       <div className="notifications-empty">No current notifications</div>
                     )}
                   </div>
@@ -650,7 +661,7 @@ function Dashboard({ user, onLogout }) {
                       <span className="profile-stat-lbl">Pets</span>
                     </div>
                     <div className="profile-stat-box">
-                      <span className="profile-stat-val">{records.length}</span>
+                      <span className="profile-stat-val">{myRecords.length}</span>
                       <span className="profile-stat-lbl">Care Records</span>
                     </div>
                   </div>
@@ -705,7 +716,7 @@ function Dashboard({ user, onLogout }) {
         )}
 
         {/* CARE CALENDAR PAGE */}
-        {activePage === "Care calendar" && <Reminders />}
+        {activePage === "Care calendar" && <Reminders pets={pets} user={user} />}
 
         {/* MY PETS PAGE */}
         {activePage === "My pets" && (

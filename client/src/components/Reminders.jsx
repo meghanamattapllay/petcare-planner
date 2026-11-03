@@ -3,7 +3,7 @@ import { Bell, CalendarDays, Filter, RotateCcw, Search } from "lucide-react";
 
 const API = import.meta.env.VITE_API_URL || (typeof window !== "undefined" && window.location.origin.includes(":5173") ? "http://localhost:5000/api" : "/api");
 
-const Reminders = () => {
+const Reminders = ({ pets = null, user = null }) => {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -50,22 +50,36 @@ const Reminders = () => {
         "Other",
     ];
 
+    const myRecords = useMemo(() => {
+        if (!records || !records.length) return [];
+        if (user?.role === "admin") return records;
+        if (pets !== null) {
+            if (pets.length === 0) return [];
+            const petIdSet = new Set(pets.map((p) => String(p._id)));
+            return records.filter((r) => {
+                const pid = String(r.petId?._id || r.petId || r.pet?._id || r.pet);
+                return petIdSet.has(pid);
+            });
+        }
+        return records;
+    }, [records, pets, user]);
+
     const upcomingCount = useMemo(
-        () => records.filter((r) => r.status === "upcoming").length,
-        [records]
+        () => myRecords.filter((r) => (r.status || "").toLowerCase() === "upcoming").length,
+        [myRecords]
     );
 
     const overdueCount = useMemo(
-        () => records.filter((r) => r.status === "overdue").length,
-        [records]
+        () => myRecords.filter((r) => (r.status || "").toLowerCase() === "overdue").length,
+        [myRecords]
     );
 
     const filteredRecords = useMemo(() => {
         const today = new Date();
         const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-        return records.filter((record) => {
-            const petName = record.petId?.name || "";
+        return myRecords.filter((record) => {
+            const petName = record.petId?.name || record.pet?.name || "";
             const title = record.title || "";
             const searchText = search.toLowerCase().trim();
 
@@ -89,7 +103,7 @@ const Reminders = () => {
 
             return matchesSearch && matchesCareType && matchesStatus && matchesDate;
         });
-    }, [records, search, careType, status, dateFilter]);
+    }, [myRecords, search, careType, status, dateFilter]);
 
     const isFiltered = Boolean(
         search || careType !== "All" || status !== "All" || dateFilter
@@ -267,7 +281,7 @@ const Reminders = () => {
                         <p>
                             {isFiltered
                                 ? "No care events match the current search or filters."
-                                : "No upcoming or overdue care recorded yet."}
+                                : (pets && pets.length === 0) ? "You have no pets added yet. Add a pet to track care schedules." : "No upcoming or overdue care recorded yet."}
                         </p>
                         {isFiltered && (
                             <button

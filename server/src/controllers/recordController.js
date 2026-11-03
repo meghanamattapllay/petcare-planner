@@ -440,11 +440,25 @@ const deleteRecord = async (req, res, next) => {
 // @route   GET /api/care-records/upcoming or /api/records/upcoming
 const getUpcomingCareRecords = async (req, res, next) => {
   try {
+    const user = req.user;
     let records = [];
 
     if (mongoose.connection.readyState === 1) {
       try {
         const query = { nextDueDate: { $exists: true, $ne: null } };
+        // If not admin, only fetch records belonging to this user or their pets
+        if (user && user.role !== 'admin') {
+          const ownerId = user.id || user._id;
+          const userPets = await Pet.find({ $or: [{ owner: ownerId }, { ownerId: ownerId }] }).select('_id');
+          const petIds = userPets.map((p) => p._id);
+          query.$or = [
+            { owner: ownerId },
+            { ownerId: ownerId },
+            { pet: { $in: petIds } },
+            { petId: { $in: petIds } },
+          ];
+        }
+
         records = await CareRecord.find(query)
           .populate('pet', 'name species photoUrl')
           .populate('petId', 'name species photoUrl')
@@ -454,8 +468,11 @@ const getUpcomingCareRecords = async (req, res, next) => {
       }
     }
 
+    // Only inject mock records if in local fallback / offline demo mode and user is admin or no DB
+    const isDBConnected = mongoose.connection.readyState === 1;
     const combined = [...records.map((r) => (r.toObject ? r.toObject() : r))];
-    if (Array.isArray(mockRecords)) {
+    
+    if (!isDBConnected && Array.isArray(mockRecords)) {
       mockRecords.forEach((m) => {
         if (!combined.some((c) => String(c._id) === String(m._id))) {
           combined.push(m);
