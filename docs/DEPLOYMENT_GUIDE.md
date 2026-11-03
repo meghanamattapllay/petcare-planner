@@ -1,5 +1,8 @@
 # 🚀 PetCare Planner — Complete Production Hosting & Deployment Guide
 
+> 🌐 **Live Production URL:** [https://petcare-planner.onrender.com/](https://petcare-planner.onrender.com/)  
+> 🩺 **Live API Endpoint:** [https://petcare-planner.onrender.com/api/health](https://petcare-planner.onrender.com/api/health)  
+
 This guide covers everything needed to host **PetCare Planner** online for free.
 
 ---

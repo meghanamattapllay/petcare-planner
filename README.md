@@ -6,8 +6,17 @@
 [![M✦ng✦DB](https://img.shields.i✦/badge/M✦ng✦DB-M✦ng✦✦se_8-47•248•l✦g✦=m✦ng✦db&l✦g✦C✦l✦r=white)](https://www.m✦ng✦db.c✦m/)
 [![Vite](https://img.shields.i✦/badge/Vite-6.0-646CFF•l✦g✦=vite&l✦g✦C✦l✦r=white)](https://vitejs.dev/)
 
-**Team Name:** PawTech Inn✦vat✦rs  
-**C✦urse/Pr✦ject:** Full-Stack MERN Capst✦ne Pr✦ject  
+**Team Name:** PawTech Innovators  
+**Course/Project:** Full-Stack MERN Capstone Project  
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-00c58e?style=for-the-badge&logo=render&logoColor=white)](https://petcare-planner.onrender.com/)
+[![API Status](https://img.shields.io/badge/API-Online-success?style=for-the-badge)](https://petcare-planner.onrender.com/api/health)
+
+> 🌐 **Live Website:** [https://petcare-planner.onrender.com/](https://petcare-planner.onrender.com/)  
+> 🩺 **Live API Healthcheck:** [https://petcare-planner.onrender.com/api/health](https://petcare-planner.onrender.com/api/health)  
+> 🔐 **Test Sign-In Accounts (1-Click Fill in UI):**
+> - **Admin Command Center:** `admin@pawtech.com` / `admin123`
+> - **Pet Owner Account:** `demo@pawtech.com` / `pawtech123`  
 
 ---
 
