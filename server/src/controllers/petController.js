@@ -310,7 +310,124 @@ const deletePet = async (req, res, next) => {
   }
 };
 
+
+// @desc    Get care records for a specific pet
+// @route   GET /api/pets/:id/care-records
+const getPetCareRecords = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let records = [];
+
+    if (mongoose.connection.readyState === 1) {
+      try {
+        const query = { $or: [{ petId: id }, { pet: id }] };
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          const objId = new mongoose.Types.ObjectId(id);
+          query.$or.push({ petId: objId }, { pet: objId });
+        }
+        records = await CareRecord.find(query).sort({ eventDate: -1, dateAdministered: -1 });
+      } catch (err) {
+        console.warn('[getPetCareRecords] DB error:', err.message);
+      }
+    }
+
+    const { mockRecords } = require('./recordController');
+    const combined = [...records.map((r) => (r.toObject ? r.toObject() : r))];
+    if (Array.isArray(mockRecords)) {
+      mockRecords.forEach((m) => {
+        const targetId = m.petId?._id || m.petId || m.pet?._id || m.pet;
+        if (String(targetId) === String(id)) {
+          if (!combined.some((c) => String(c._id) === String(m._id))) {
+            combined.push(m);
+          }
+        }
+      });
+    }
+
+    combined.sort((a, b) => new Date(b.eventDate || b.dateAdministered || b.createdAt) - new Date(a.eventDate || a.dateAdministered || a.createdAt));
+
+    return res.status(200).json(combined);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Create care record for a specific pet
+// @route   POST /api/pets/:id/care-records
+const createPetCareRecord = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { careType, title, eventDate, dateAdministered, nextDueDate, notes, providerName, cost } = req.body;
+
+    if (!careType || !title) {
+      return res.status(400).json({ message: 'Care type and title are required.' });
+    }
+
+    const ownerId = req.user ? (req.user.id || req.user._id) : 'demo_owner';
+    const petObj = (mockPets || []).find((p) => String(p._id) === String(id));
+    const petMeta = petObj ? { _id: petObj._id, name: petObj.name, species: petObj.species } : { _id: id, name: 'Pet' };
+
+    let record;
+    if (mongoose.connection.readyState === 1) {
+      try {
+        record = await CareRecord.create({
+          petId: id,
+          pet: id,
+          ownerId,
+          owner: ownerId,
+          careType,
+          title,
+          eventDate: eventDate || dateAdministered || new Date(),
+          dateAdministered: dateAdministered || eventDate || new Date(),
+          nextDueDate: nextDueDate ? new Date(nextDueDate) : undefined,
+          status: nextDueDate && new Date(nextDueDate) < new Date() ? 'overdue' : 'upcoming',
+          notes: notes || '',
+          providerName: providerName || '',
+          cost: Number(cost) || 0,
+        });
+      } catch (err) {
+        console.warn('[createPetCareRecord] DB create failed:', err.message);
+      }
+    }
+
+    if (!record) {
+      record = {
+        _id: 'rec_' + Date.now(),
+        petId: petMeta,
+        pet: petMeta,
+        ownerId,
+        careType,
+        title,
+        eventDate: eventDate || new Date().toISOString(),
+        dateAdministered: dateAdministered || eventDate || new Date().toISOString(),
+        nextDueDate: nextDueDate ? new Date(nextDueDate).toISOString() : null,
+        status: nextDueDate && new Date(nextDueDate) < new Date() ? 'overdue' : 'upcoming',
+        notes: notes || '',
+        providerName: providerName || '',
+        cost: Number(cost) || 0,
+        createdAt: new Date().toISOString(),
+      };
+    } else {
+      if (record.toObject) record = record.toObject();
+      record.petId = petMeta;
+      record.pet = petMeta;
+    }
+
+    const { addMockRecord } = require('./recordController');
+    if (typeof addMockRecord === 'function') {
+      addMockRecord(record);
+    }
+
+    return res.status(201).json(record);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
+  mockPets,
+  getPetCareRecords,
+  createPetCareRecord,
   getPets,
   getPetById,
   createPet,

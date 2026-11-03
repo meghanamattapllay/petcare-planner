@@ -364,13 +364,24 @@ function Dashboard({ user, onLogout }) {
   const load = async () => {
     try {
       const [petData, recordData] = await Promise.all([
-        api("/pets"),
-        api("/care-records/upcoming"),
+        api("/pets").catch((err) => {
+          console.warn("Failed loading pets:", err.message);
+          return [];
+        }),
+        api("/care-records/upcoming").catch((err) => {
+          console.warn("Failed loading upcoming care records:", err.message);
+          return [];
+        }),
       ]);
 
-      setPets(petData);
-      setRecords(recordData);
+      const resolvedPets = Array.isArray(petData) ? petData : (petData?.data || []);
+      const resolvedRecords = Array.isArray(recordData) ? recordData : (recordData?.data || []);
+
+      setPets(resolvedPets);
+      setRecords(resolvedRecords);
+      setError("");
     } catch (e) {
+      console.warn("load error:", e);
       setError(e.message);
     }
   };

@@ -435,7 +435,67 @@ const deleteRecord = async (req, res, next) => {
   }
 };
 
+
+// @desc    Get upcoming care records
+// @route   GET /api/care-records/upcoming or /api/records/upcoming
+const getUpcomingCareRecords = async (req, res, next) => {
+  try {
+    let records = [];
+
+    if (mongoose.connection.readyState === 1) {
+      try {
+        const query = { nextDueDate: { $exists: true, $ne: null } };
+        records = await CareRecord.find(query)
+          .populate('pet', 'name species photoUrl')
+          .populate('petId', 'name species photoUrl')
+          .sort({ nextDueDate: 1 });
+      } catch (dbErr) {
+        console.warn('[getUpcomingCareRecords] DB error:', dbErr.message);
+      }
+    }
+
+    const combined = [...records.map((r) => (r.toObject ? r.toObject() : r))];
+    if (Array.isArray(mockRecords)) {
+      mockRecords.forEach((m) => {
+        if (!combined.some((c) => String(c._id) === String(m._id))) {
+          combined.push(m);
+        }
+      });
+    }
+
+    const formatted = combined
+      .filter((r) => r.nextDueDate)
+      .map((r) => {
+        const due = new Date(r.nextDueDate);
+        const isOverdue = due < new Date();
+        return {
+          ...r,
+          status: isOverdue ? 'overdue' : 'upcoming',
+          petId: r.petId || r.pet,
+        };
+      })
+      .sort((a, b) => new Date(a.nextDueDate) - new Date(b.nextDueDate));
+
+    return res.status(200).json(formatted);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const addMockRecord = (record) => {
+  if (!record || !record._id) return;
+  const existingIdx = mockRecords.findIndex((r) => String(r._id) === String(record._id));
+  if (existingIdx !== -1) {
+    mockRecords[existingIdx] = { ...mockRecords[existingIdx], ...record };
+  } else {
+    mockRecords.unshift(record);
+  }
+};
+
 module.exports = {
+  mockRecords,
+  addMockRecord,
+  getUpcomingCareRecords,
   getRecords,
   getRecordById,
   createRecord,
