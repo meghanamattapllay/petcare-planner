@@ -3,28 +3,34 @@ const mongoose = require('mongoose');
 /**
  * Care Record MongoDB Model Schema
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll Number: 2303A51803
+ * Roll Number: 2303A51803 · Branch: CSE
  */
 const careRecordSchema = new mongoose.Schema(
   {
-    petId: {
-      type: mongoose.Schema.Types.Mixed,
-      ref: 'Pet',
-    },
     pet: {
-      type: mongoose.Schema.Types.Mixed,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Pet',
-    },
-    ownerId: {
-      type: mongoose.Schema.Types.Mixed,
-      ref: 'User',
+      required: [true, 'Care record must belong to a pet'],
     },
     owner: {
-      type: mongoose.Schema.Types.Mixed,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: [true, 'Care record must have an owner'],
     },
     careType: {
       type: String,
+      enum: {
+        values: [
+          'Vaccination',
+          'Medication',
+          'Grooming',
+          'Vet Visit',
+          'Deworming',
+          'Nutrition',
+          'Other',
+        ],
+        message: '{VALUE} is not a valid care type',
+      },
       required: [true, 'Care type is required'],
     },
     title: {
@@ -32,19 +38,20 @@ const careRecordSchema = new mongoose.Schema(
       required: [true, 'Care record title is required'],
       trim: true,
     },
-    eventDate: {
-      type: Date,
-      default: Date.now,
-    },
     dateAdministered: {
       type: Date,
       default: Date.now,
     },
     nextDueDate: {
       type: Date,
+      required: [true, 'Next scheduled or reminder due date is required'],
     },
     status: {
       type: String,
+      enum: {
+        values: ['Completed', 'Upcoming', 'Overdue'],
+        message: '{VALUE} is not a valid status',
+      },
       default: 'Upcoming',
     },
     notes: {
@@ -55,11 +62,7 @@ const careRecordSchema = new mongoose.Schema(
     cost: {
       type: Number,
       default: 0,
-    },
-    providerName: {
-      type: String,
-      trim: true,
-      default: '',
+      min: [0, 'Cost cannot be negative'],
     },
     veterinarian: {
       type: String,
@@ -69,17 +72,28 @@ const careRecordSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-// Pre-save hook to keep aliases synchronized
-careRecordSchema.pre('save', function (next) {
-  if (this.petId && !this.pet) this.pet = this.petId;
-  if (this.pet && !this.petId) this.petId = this.pet;
-  if (this.ownerId && !this.owner) this.owner = this.ownerId;
-  if (this.owner && !this.ownerId) this.ownerId = this.owner;
-  if (this.eventDate && !this.dateAdministered) this.dateAdministered = this.eventDate;
-  if (this.dateAdministered && !this.eventDate) this.eventDate = this.dateAdministered;
+// Virtual for backward-compatibility with code expecting petId or ownerId
+careRecordSchema.virtual('petId').get(function () {
+  return this.pet;
+});
+
+careRecordSchema.virtual('ownerId').get(function () {
+  return this.owner;
+});
+
+// Pre-validate hook: auto-map petId/ownerId if pet/owner are missing
+careRecordSchema.pre('validate', function (next) {
+  if (!this.pet && this.get('petId')) {
+    this.pet = this.get('petId');
+  }
+  if (!this.owner && this.get('ownerId')) {
+    this.owner = this.get('ownerId');
+  }
   next();
 });
 

@@ -31,8 +31,8 @@ You will be working directly in these files:
 ## 📋 Step-by-Step Task Checklist
 
 ### Step 1: Pet MongoDB Model (`Pet.js`)
-- [ ] Open `server/src/models/Pet.js`.
-- [ ] Ensure schema attributes:
+- [x] Open `server/src/models/Pet.js`.
+- [x] Ensure schema attributes:
   - `name`: String, required.
   - `species`: String, required (`Dog`, `Cat`, etc.).
   - `breed`: String.
@@ -45,8 +45,8 @@ You will be working directly in these files:
   - `timestamps: true`.
 
 ### Step 2: CareRecord MongoDB Model (`CareRecord.js`)
-- [ ] Open `server/src/models/CareRecord.js`.
-- [ ] Ensure schema attributes:
+- [x] Open `server/src/models/CareRecord.js`.
+- [x] Ensure schema attributes:
   - `pet`: ObjectId referencing `'Pet'`, required.
   - `owner`: ObjectId referencing `'User'`, required.
   - `careType`: Enum `['Vaccination', 'Medication', 'Grooming', 'Vet Visit', 'Deworming', 'Nutrition', 'Other']`, required.
@@ -60,24 +60,24 @@ You will be working directly in these files:
   - `timestamps: true`.
 
 ### Step 3: Pet CRUD Controller (`petController.js`)
-- [ ] **`GET /api/pets`**: Query MongoDB for pets. If authenticated user exists, filter by `owner: req.user.id`. Return list and count.
-- [ ] **`GET /api/pets/:id`**: Find pet by `_id`. Return `404` if not found.
-- [ ] **`POST /api/pets`**: Create a new pet with incoming payload and bind to `owner`. Return `201 Created`.
-- [ ] **`PUT /api/pets/:id`**: Update existing pet with `Pet.findByIdAndUpdate(id, req.body, { new: true })`.
-- [ ] **`DELETE /api/pets/:id`**: Delete pet with `Pet.findByIdAndDelete(id)`. Optional: also delete associated care records.
+- [x] **`GET /api/pets`**: Query MongoDB for pets. If authenticated user exists, filter by `owner: req.user.id`. Return list and count.
+- [x] **`GET /api/pets/:id`**: Find pet by `_id`. Return `404` if not found.
+- [x] **`POST /api/pets`**: Create a new pet with incoming payload and bind to `owner`. Return `201 Created`.
+- [x] **`PUT /api/pets/:id`**: Update existing pet with `Pet.findByIdAndUpdate(id, req.body, { new: true })`.
+- [x] **`DELETE /api/pets/:id`**: Delete pet with `Pet.findByIdAndDelete(id)`. Optional: also delete associated care records.
 
 ### Step 4: CareRecord CRUD Controller (`recordController.js`)
-- [ ] **`GET /api/records`**: Find care records. Support query parameters:
+- [x] **`GET /api/records`**: Find care records. Support query parameters:
   - `?petId=...` -> filter by pet
   - `?careType=...` -> filter by care type
   - `?status=...` -> filter by status
   - Populate pet details using `.populate('pet', 'name species photoUrl')`.
-- [ ] **`POST /api/records`**: Create new care record with `pet`, `careType`, `title`, `nextDueDate`. Bind `owner`.
-- [ ] **`DELETE /api/records/:id`**: Delete care record by `_id`.
+- [x] **`POST /api/records`**: Create new care record with `pet`, `careType`, `title`, `nextDueDate`. Bind `owner`.
+- [x] **`DELETE /api/records/:id`**: Delete care record by `_id`.
 
 ### Step 5: Data Validation & Error Handling
-- [ ] Enforce required fields. Return `400 Bad Request` with descriptive JSON messages if fields are missing.
-- [ ] Wrap database calls in `try/catch` passing errors to `next(error)`.
+- [x] Enforce required fields. Return `400 Bad Request` with descriptive JSON messages if fields are missing.
+- [x] Wrap database calls in `try/catch` passing errors to `next(error)`.
 
 ---
 
@@ -108,4 +108,3 @@ You will be working directly in these files:
    node server/test-integration.js
    ```
 4. Verify that Pet Count and Record Count return live data from MongoDB.
-

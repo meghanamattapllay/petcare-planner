@@ -48,7 +48,7 @@ export default function TeamPage() {
         'Conduct Postman API tests and document sample request/response payloads',
       ],
       deliverable: 'Pet and care record APIs with database integration & Postman collection.',
-      status: 'IN PROGRESS / CONTRACT READY',
+      status: 'COMPLETED & LIVE',
     },
     {
       id: 4,
@@ -101,38 +101,42 @@ export default function TeamPage() {
         {teamMembers.map((member) => (
           <div key={member.id} className="team-card">
             <div className="team-card-header">
-              <div className="member-main">
-                <span className="member-num">#{member.id}</span>
-                <div>
-                  <h3 className="member-name">{member.name}</h3>
-                  <p className="member-role">{member.role}</p>
-                </div>
+              <div>
+                <h3 className="member-name">{member.name}</h3>
+                <span className="member-role">{member.role}</span>
               </div>
-              <span className={`status-badge-chip ${member.status.startsWith('COMPLETED') ? 'chip-completed' : 'chip-ready'}`}>
+              <span
+                className={`status-pill ${
+                  member.status.includes('COMPLETED')
+                    ? 'status-completed'
+                    : 'status-progress'
+                }`}
+              >
                 {member.status}
               </span>
             </div>
 
             <div className="member-meta">
-              <span><strong>Roll:</strong> {member.rollNo}</span>
-              <span><strong>Branch:</strong> {member.branch}</span>
+              <span>
+                <strong>Roll No:</strong> {member.rollNo}
+              </span>
+              <span>
+                <strong>Branch:</strong> {member.branch}
+              </span>
             </div>
 
-            <div className="member-tasks-section">
-              <h4>Assigned Module Tasks:</h4>
-              <ul className="tasks-list">
+            <div className="member-section">
+              <h4>Assigned Tasks & Deliverable:</h4>
+              <p className="member-deliverable">{member.deliverable}</p>
+            </div>
+
+            <div className="member-section">
+              <h4>Implementation Scope:</h4>
+              <ul className="member-tasks-list">
                 {member.tasks.map((task, idx) => (
-                  <li key={idx} className={member.status.startsWith('COMPLETED') ? 'task-done' : 'task-pending'}>
-                    <span className="task-bullet">{member.status.startsWith('COMPLETED') ? '✓' : '○'}</span>
-                    {task}
-                  </li>
+                  <li key={idx}>{task}</li>
                 ))}
               </ul>
-            </div>
-
-            <div className="deliverable-box">
-              <strong>Official Deliverable:</strong>
-              <p>{member.deliverable}</p>
             </div>
           </div>
         ))}

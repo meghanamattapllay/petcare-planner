@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 /**
  * Pet MongoDB Model Schema
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll Number: 2303A51803
+ * Roll Number: 2303A51803 · Branch: CSE
  */
 const petSchema = new mongoose.Schema(
   {
@@ -14,16 +14,13 @@ const petSchema = new mongoose.Schema(
     },
     species: {
       type: String,
-      required: [true, 'Species is required (e.g. Dog, Cat, Bird, Rabbit, Other)'],
+      required: [true, 'Species is required (e.g. Dog, Cat, Bird)'],
       trim: true,
     },
     breed: {
       type: String,
       trim: true,
-      default: '',
-    },
-    birthDate: {
-      type: Date,
+      default: 'Unknown',
     },
     age: {
       type: Number,
@@ -31,43 +28,47 @@ const petSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ['Male', 'Female', 'Unknown'],
+      enum: {
+        values: ['Male', 'Female', 'Unknown'],
+        message: '{VALUE} is not a valid gender',
+      },
       default: 'Unknown',
     },
     weight: {
-      type: Number,
+      type: Number, // weight in kilograms
+      min: [0, 'Weight cannot be negative'],
     },
     allergies: {
       type: [String],
       default: [],
     },
-    notes: {
-      type: String,
-      trim: true,
-      default: '',
-    },
     photoUrl: {
       type: String,
-      default: '',
-    },
-    ownerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      default: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: [true, 'Pet owner is required'],
     },
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-// Middleware to keep ownerId and owner synced
-petSchema.pre('save', function (next) {
-  if (this.ownerId && !this.owner) this.owner = this.ownerId;
-  if (this.owner && !this.ownerId) this.ownerId = this.owner;
+// Virtual for backward-compatibility with code expecting ownerId
+petSchema.virtual('ownerId').get(function () {
+  return this.owner;
+});
+
+// Pre-save hook: auto-fill owner if ownerId is passed
+petSchema.pre('validate', function (next) {
+  if (!this.owner && this.get('ownerId')) {
+    this.owner = this.get('ownerId');
+  }
   next();
 });
 

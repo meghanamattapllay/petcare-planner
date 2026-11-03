@@ -6,25 +6,27 @@ const {
   createPet,
   updatePet,
   deletePet,
-  getPetCareRecords,
-  createPetCareRecord,
 } = require('../controllers/petController');
+const { optionalAuth } = require('../middleware/authMiddleware');
 
 /**
- * Pet Routes
- * Assigned: BODASU NITHIN (Backend: Database & APIs)
+ * Express Router: Pet Profiles CRUD Endpoints
+ * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
+ * Roll Number: 2303A51803 · Branch: CSE
  * Integrated by: Godishala Kruthik Roshan
  */
 
-router.get('/', getPets);
-router.get('/:id', getPetById);
-router.post('/', createPet);
-router.put('/:id', updatePet);
-router.patch('/:id', updatePet);
-router.delete('/:id', deletePet);
+// Attach user authentication context when Bearer token is provided
+router.use(optionalAuth);
 
-// Sub-routes for pet care records
-router.get('/:id/care-records', getPetCareRecords);
-router.post('/:id/care-records', createPetCareRecord);
+// Routes definition
+router.route('/')
+  .get(getPets)
+  .post(createPet);
+
+router.route('/:id')
+  .get(getPetById)
+  .put(updatePet)
+  .delete(deletePet);
 
 module.exports = router;

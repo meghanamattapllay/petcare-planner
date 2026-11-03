@@ -1,29 +1,28 @@
+const mongoose = require('mongoose');
 const Pet = require('../models/Pet');
 const CareRecord = require('../models/CareRecord');
-const { mockRecords, addMockRecord } = require('./recordController');
-const mongoose = require('mongoose');
+const User = require('../models/User');
 
 /**
- * Controller: Pet Profiles CRUD & Pet Care Records
+ * Controller: Pet Profiles CRUD
  * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll: 2303A51803 · Branch: CSE
+ * Roll Number: 2303A51803 · Branch: CSE
  * Integrated by: Godishala Kruthik Roshan
  */
 
+// In-memory store for instant demonstration when DB is disconnected
 let mockPets = [
   {
     _id: 'pet_01',
     name: 'Milo',
     species: 'Dog',
     breed: 'Golden Retriever',
-    birthDate: '2023-04-12',
     age: 3,
     gender: 'Male',
     weight: 28,
     allergies: ['Peanut Butter', 'Certain Grasses'],
-    notes: 'Loves tennis balls and running in the park.',
     photoUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400',
-    ownerId: 'demo_owner',
+    owner: '6ae430b988ce6d453a371b77',
     createdAt: new Date(),
   },
   {
@@ -31,43 +30,70 @@ let mockPets = [
     name: 'Luna',
     species: 'Cat',
     breed: 'Siamese',
-    birthDate: '2024-02-18',
     age: 2,
     gender: 'Female',
     weight: 4.5,
     allergies: ['Lactose'],
-    notes: 'Prefers quiet corners and feather wands.',
     photoUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400',
-    ownerId: 'demo_owner',
+    owner: '6ae430b988ce6d453a371b77',
     createdAt: new Date(),
   },
 ];
 
-// @desc    Get all pets
+// Helper to resolve an owner ObjectId for unauthenticated Postman/demo calls
+const resolveOwnerId = async (req) => {
+  if (req.user && (req.user.id || req.user._id)) {
+    return req.user.id || req.user._id;
+  }
+  if (req.body && (req.body.owner || req.body.ownerId)) {
+    return req.body.owner || req.body.ownerId;
+  }
+  try {
+    const existingUser = await User.findOne();
+    if (existingUser) {
+      return existingUser._id;
+    }
+  } catch (err) {
+    // Database lookup not available
+  }
+  return new mongoose.Types.ObjectId();
+};
+
+// @desc    Get all pets (filtered by owner if authenticated)
 // @route   GET /api/pets
+// @access  Public / Private
 const getPets = async (req, res, next) => {
   try {
-    const ownerId = req.user ? req.user.id : null;
-    let pets = [];
+    const ownerId = req.user ? (req.user.id || req.user._id) : null;
+    let filter = {};
+
+    if (ownerId) {
+      filter.$or = [{ owner: ownerId }, { ownerId: ownerId }];
+    }
 
     try {
+      const pets = await Pet.find(filter)
+        .populate('owner', 'name email')
+        .sort({ createdAt: -1 });
+
+      return res.status(200).json({
+        success: true,
+        count: pets.length,
+        data: pets,
+      });
+    } catch (dbErr) {
+      console.warn('[PetController] DB lookup error, falling back to mock data:', dbErr.message);
+      let filteredMock = mockPets;
       if (ownerId) {
-        pets = await Pet.find({
-          $or: [{ ownerId }, { owner: ownerId }],
-        }).sort({ createdAt: -1 });
-      } else {
-        pets = await Pet.find().sort({ createdAt: -1 });
+        filteredMock = mockPets.filter((p) => String(p.owner) === String(ownerId));
       }
-    } catch (err) {
-      pets = mockPets;
-    }
 
-    if (!pets || pets.length === 0) {
-      pets = mockPets;
+      return res.status(200).json({
+        success: true,
+        count: filteredMock.length,
+        data: filteredMock,
+      });
     }
-
-    // Return array directly for modern React clients
-    res.json(pets);
   } catch (error) {
     next(error);
   }
@@ -75,233 +101,210 @@ const getPets = async (req, res, next) => {
 
 // @desc    Get a single pet by ID
 // @route   GET /api/pets/:id
+// @access  Public / Private
 const getPetById = async (req, res, next) => {
   try {
     const { id } = req.params;
     let pet = null;
 
-    try {
-      pet = await Pet.findById(id);
-    } catch (err) {
-      pet = mockPets.find((p) => p._id === id);
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      try {
+        pet = await Pet.findById(id).populate('owner', 'name email');
+      } catch (dbErr) {
+        console.warn('[PetController] DB read error:', dbErr.message);
+      }
     }
 
     if (!pet) {
-      pet = mockPets.find((p) => p._id === id);
+      pet = mockPets.find((p) => String(p._id) === String(id));
     }
 
     if (!pet) {
-      return res.status(404).json({ message: `Pet not found with id: ${id}` });
+      return res.status(404).json({
+        success: false,
+        message: `Pet profile not found with id: ${id}`,
+      });
     }
 
-    res.json(pet);
+    return res.status(200).json({
+      success: true,
+      data: pet,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Create a new pet
+// @desc    Create a new pet profile
 // @route   POST /api/pets
+// @access  Public / Private
 const createPet = async (req, res, next) => {
   try {
-    const { name, species, breed, birthDate, age, gender, weight, allergies, notes, photoUrl } = req.body;
+    const { name, species, breed, age, gender, weight, allergies, photoUrl } = req.body;
 
-    if (!name || !species) {
-      return res.status(400).json({ message: 'Name and species are mandatory fields.' });
+    // Enforce required fields
+    if (!name || !String(name).trim() || !species || !String(species).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error: Both name and species are mandatory fields',
+      });
     }
 
-    const ownerId = req.user ? req.user.id : 'demo_owner';
-    let newPet;
+    // Validate age if provided
+    if (age !== undefined && age !== null && age !== '' && Number(age) < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error: Age cannot be a negative value',
+      });
+    }
+
+    // Validate gender enum
+    if (gender && !['Male', 'Female', 'Unknown'].includes(gender)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error: Gender must be Male, Female, or Unknown',
+      });
+    }
+
+    const ownerId = await resolveOwnerId(req);
+
+    const petPayload = {
+      name: name.trim(),
+      species: species.trim(),
+      breed: breed ? breed.trim() : 'Unknown',
+      age: age !== undefined && age !== '' && !isNaN(Number(age)) ? Number(age) : 1,
+      gender: gender || 'Unknown',
+      weight: weight !== undefined && weight !== '' && !isNaN(Number(weight)) ? Number(weight) : undefined,
+      allergies: Array.isArray(allergies)
+        ? allergies
+        : typeof allergies === 'string' && allergies.length > 0
+        ? allergies.split(',').map((s) => s.trim())
+        : [],
+      photoUrl: photoUrl || 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400',
+      owner: ownerId,
+    };
 
     try {
-      newPet = await Pet.create({
-        name: String(name).trim(),
-        species,
-        breed: String(breed || '').trim(),
-        birthDate: birthDate || undefined,
-        age: Number(age) || 1,
-        gender: gender || 'Unknown',
-        weight: Number(weight) || 5,
-        allergies: Array.isArray(allergies) ? allergies : (allergies ? [allergies] : []),
-        notes: String(notes || '').trim(),
-        photoUrl: photoUrl || '',
-        ownerId,
-        owner: ownerId,
-      });
-    } catch (err) {
-      newPet = {
-        _id: 'pet_' + Date.now(),
-        name,
-        species,
-        breed: breed || 'Mixed',
-        birthDate: birthDate || new Date().toISOString(),
-        age: Number(age) || 1,
-        gender: gender || 'Unknown',
-        weight: Number(weight) || 5,
-        allergies: allergies || [],
-        notes: notes || '',
-        photoUrl: photoUrl || '',
-        ownerId,
-        owner: ownerId,
-        createdAt: new Date(),
-      };
-      mockPets.unshift(newPet);
-    }
+      const newPet = await Pet.create(petPayload);
+      const populated = await Pet.findById(newPet._id).populate('owner', 'name email');
 
-    res.status(201).json(newPet);
+      return res.status(201).json({
+        success: true,
+        message: 'Pet profile created successfully',
+        data: populated || newPet,
+      });
+    } catch (dbErr) {
+      console.warn('[PetController] DB create failed, saving to mockPets:', dbErr.message);
+      const fallbackPet = {
+        _id: 'pet_' + Date.now(),
+        ...petPayload,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      mockPets.unshift(fallbackPet);
+
+      return res.status(201).json({
+        success: true,
+        message: 'Pet profile created successfully (Fallback Mode)',
+        data: fallbackPet,
+      });
+    }
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Update an existing pet
-// @route   PUT /api/pets/:id or PATCH /api/pets/:id
+// @desc    Update an existing pet profile
+// @route   PUT /api/pets/:id
+// @access  Public / Private
 const updatePet = async (req, res, next) => {
   try {
     const { id } = req.params;
-    let updated;
+    let updated = null;
 
-    try {
-      updated = await Pet.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-    } catch (err) {
-      const idx = mockPets.findIndex((p) => p._id === id);
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      try {
+        updated = await Pet.findByIdAndUpdate(id, req.body, {
+          new: true,
+          runValidators: true,
+        }).populate('owner', 'name email');
+      } catch (dbErr) {
+        console.warn('[PetController] DB update error:', dbErr.message);
+      }
+    }
+
+    if (!updated) {
+      const idx = mockPets.findIndex((p) => String(p._id) === String(id));
       if (idx !== -1) {
-        mockPets[idx] = { ...mockPets[idx], ...req.body };
+        mockPets[idx] = {
+          ...mockPets[idx],
+          ...req.body,
+          updatedAt: new Date(),
+        };
         updated = mockPets[idx];
       }
     }
 
     if (!updated) {
-      return res.status(404).json({ message: 'Pet profile not found for updating.' });
+      return res.status(404).json({
+        success: false,
+        message: `Pet profile not found for updating with id: ${id}`,
+      });
     }
 
-    res.json(updated);
+    return res.status(200).json({
+      success: true,
+      message: 'Pet profile updated successfully',
+      data: updated,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Delete a pet
+// @desc    Delete a pet profile and associated care records
 // @route   DELETE /api/pets/:id
+// @access  Public / Private
 const deletePet = async (req, res, next) => {
   try {
     const { id } = req.params;
+    let foundAndDeleted = false;
 
-    try {
-      await Pet.findByIdAndDelete(id);
-      await CareRecord.deleteMany({ $or: [{ petId: id }, { pet: id }] });
-    } catch (err) {
-      mockPets = mockPets.filter((p) => p._id !== id);
-    }
-
-    res.status(204).end();
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Get care records for a specific pet
-// @route   GET /api/pets/:id/care-records
-const getPetCareRecords = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    let records = [];
-
-    if (mongoose.connection.readyState === 1) {
+    if (mongoose.Types.ObjectId.isValid(id)) {
       try {
-        const query = { $or: [{ petId: id }, { pet: id }] };
-        if (mongoose.Types.ObjectId.isValid(id)) {
-          const objId = new mongoose.Types.ObjectId(id);
-          query.$or.push({ petId: objId }, { pet: objId });
+        const deletedDoc = await Pet.findByIdAndDelete(id);
+        if (deletedDoc) {
+          foundAndDeleted = true;
+          // Cascade delete associated care records
+          await CareRecord.deleteMany({
+            $or: [{ pet: id }, { petId: id }],
+          });
         }
-        records = await CareRecord.find(query).sort({ eventDate: -1, dateAdministered: -1 });
-      } catch (err) {
-        console.warn('[getPetCareRecords] DB error:', err.message);
+      } catch (dbErr) {
+        console.warn('[PetController] DB delete error:', dbErr.message);
       }
     }
 
-    const combined = [...records.map((r) => (r.toObject ? r.toObject() : r))];
-    mockRecords.forEach((m) => {
-      const targetId = m.petId?._id || m.petId || m.pet?._id || m.pet;
-      if (String(targetId) === String(id)) {
-        if (!combined.some((c) => String(c._id) === String(m._id))) {
-          combined.push(m);
-        }
+    if (!foundAndDeleted) {
+      const initialLength = mockPets.length;
+      mockPets = mockPets.filter((p) => String(p._id) !== String(id));
+      if (mockPets.length < initialLength) {
+        foundAndDeleted = true;
       }
+    }
+
+    if (!foundAndDeleted) {
+      return res.status(404).json({
+        success: false,
+        message: `Pet profile not found with id: ${id}`,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Pet profile and associated care records deleted successfully',
+      deletedId: id,
     });
-
-    combined.sort((a, b) => new Date(b.eventDate || b.createdAt) - new Date(a.eventDate || a.createdAt));
-
-    res.json(combined);
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Create care record for a specific pet
-// @route   POST /api/pets/:id/care-records
-const createPetCareRecord = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { careType, title, eventDate, nextDueDate, notes, providerName, cost } = req.body;
-
-    if (!careType || !title) {
-      return res.status(400).json({ message: 'Care type and title are required.' });
-    }
-
-    const ownerId = req.user ? req.user.id : 'demo_owner';
-    const petObj = mockPets.find((p) => String(p._id) === String(id));
-    const petMeta = petObj ? { _id: petObj._id, name: petObj.name, species: petObj.species } : { _id: id, name: 'Pet' };
-
-    let record;
-    if (mongoose.connection.readyState === 1) {
-      try {
-        record = await CareRecord.create({
-          petId: id,
-          pet: id,
-          ownerId,
-          owner: ownerId,
-          careType,
-          title,
-          eventDate: eventDate || new Date(),
-          dateAdministered: eventDate || new Date(),
-          nextDueDate: nextDueDate ? new Date(nextDueDate) : undefined,
-          status: nextDueDate && new Date(nextDueDate) < new Date() ? 'overdue' : 'upcoming',
-          notes: notes || '',
-          providerName: providerName || '',
-          cost: Number(cost) || 0,
-        });
-      } catch (err) {
-        console.warn('[createPetCareRecord] DB create failed:', err.message);
-      }
-    }
-
-    if (!record) {
-      record = {
-        _id: 'rec_' + Date.now(),
-        petId: petMeta,
-        pet: petMeta,
-        ownerId,
-        careType,
-        title,
-        eventDate: eventDate || new Date().toISOString(),
-        dateAdministered: eventDate || new Date().toISOString(),
-        nextDueDate: nextDueDate ? new Date(nextDueDate).toISOString() : null,
-        status: nextDueDate && new Date(nextDueDate) < new Date() ? 'overdue' : 'upcoming',
-        notes: notes || '',
-        providerName: providerName || '',
-        cost: Number(cost) || 0,
-        createdAt: new Date().toISOString(),
-      };
-    } else {
-      if (record.toObject) record = record.toObject();
-      record.petId = petMeta;
-      record.pet = petMeta;
-    }
-
-    addMockRecord(record);
-
-    res.status(201).json(record);
   } catch (error) {
     next(error);
   }
@@ -313,6 +316,4 @@ module.exports = {
   createPet,
   updatePet,
   deletePet,
-  getPetCareRecords,
-  createPetCareRecord,
 };

@@ -40,5 +40,23 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const optionalAuth = (req, res, next) => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'dev_jwt_secret_key_12345'
+      );
+      req.user = decoded;
+    } catch (error) {
+      // Continue unauthenticated if token verification fails
+    }
+  }
+  next();
+};
 
+module.exports = { protect, optionalAuth };

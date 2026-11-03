@@ -1,24 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getUpcomingCareRecords,
   getRecords,
+  getRecordById,
   createRecord,
   updateRecord,
   deleteRecord,
 } = require('../controllers/recordController');
+const { optionalAuth } = require('../middleware/authMiddleware');
 
 /**
- * Care Record Routes
- * Assigned: BODASU NITHIN & MATAPALLY MEGHANA
+ * Express Router: Care Record CRUD Endpoints
+ * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
+ * Roll Number: 2303A51803 · Branch: CSE
+ * Timeline Integration: MATAPALLY MEGHANA (Reminders & Timeline)
  * Integrated by: Godishala Kruthik Roshan
  */
 
-router.get('/upcoming', getUpcomingCareRecords);
-router.get('/', getRecords);
-router.post('/', createRecord);
-router.put('/:id', updateRecord);
-router.patch('/:id', updateRecord);
-router.delete('/:id', deleteRecord);
+// Attach user authentication context when Bearer token is provided
+router.use(optionalAuth);
+
+// Routes definition
+router.route('/')
+  .get(getRecords)
+  .post(createRecord);
+
+router.route('/:id')
+  .get(getRecordById)
+  .put(updateRecord)
+  .delete(deleteRecord);
 
 module.exports = router;
