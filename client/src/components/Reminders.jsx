@@ -134,7 +134,6 @@ const Reminders = ({ pets = null, user = null }) => {
                 </div>
             </div>
 
-            {/* Interactive Stat Cards for Filtering */}
             <div className="reminders-stat-grid">
                 <button
                     type="button"
@@ -173,7 +172,6 @@ const Reminders = ({ pets = null, user = null }) => {
                 </button>
             </div>
 
-            {/* Modern Clean Filter Toolbar */}
             <div className="reminders-filters">
                 <div className="search">
                     <Search size={17} />
@@ -232,7 +230,6 @@ const Reminders = ({ pets = null, user = null }) => {
 
             {error && <div className="error">{error}</div>}
 
-            {/* Polished Reminders Card List */}
             <div className="reminder-list">
                 {filteredRecords.map((record) => {
                     const dueDateObj = record.nextDueDate ? new Date(record.nextDueDate) : null;
@@ -301,3 +298,4 @@ const Reminders = ({ pets = null, user = null }) => {
 };
 
 export default Reminders;
+

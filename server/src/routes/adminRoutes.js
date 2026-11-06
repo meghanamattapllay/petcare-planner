@@ -10,11 +10,6 @@ const {
   addCareCategory,
 } = require('../controllers/adminController');
 
-/**
- * Admin Routes
- * Base route: /api/admin
- */
-
 router.get('/stats', getAdminStats);
 router.get('/users', getAllUsers);
 router.patch('/users/:id/role', updateUserRole);

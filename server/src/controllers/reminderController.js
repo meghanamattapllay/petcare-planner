@@ -1,14 +1,5 @@
 const CareRecord = require('../models/CareRecord');
 
-/**
- * Controller: Reminders & Timeline Status
- * Assigned Member: MATAPALLY MEGHANA (Reminders & Timeline)
- * Roll: 2303A52505 · Branch: CSE (AIML)
- * Integrated by: Godishala Kruthik Roshan
- */
-
-// @desc    Get categorized reminders (Upcoming, Overdue, Completed) with day calculations
-// @route   GET /api/reminders
 const getReminders = async (req, res, next) => {
   try {
     const now = new Date();
@@ -17,7 +8,7 @@ const getReminders = async (req, res, next) => {
     try {
       records = await CareRecord.find().populate('pet', 'name species photoUrl');
     } catch (err) {
-      // Handled gracefully for integration demo
+
       records = [
         {
           _id: 'rec_01',

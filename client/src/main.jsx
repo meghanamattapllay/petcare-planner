@@ -29,7 +29,7 @@ import AdminPortal from "./components/AdminPortal";
 const API = import.meta.env.VITE_API_URL || (typeof window !== "undefined" && window.location.origin.includes(":5173") ? "http://localhost:5000/api" : "/api");
 const emptyPet = { name: "", species: "Dog", breed: "", birthDate: "", notes: "", photoUrl: "" };
 const breedKeywords = {
-  // Dogs
+
   golden: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80",
   retriever: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80",
   labrador: "https://images.unsplash.com/photo-1579202673506-ca3ce28943ef?auto=format&fit=crop&w=400&q=80",
@@ -40,18 +40,18 @@ const breedKeywords = {
   poodle: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=400&q=80",
   bulldog: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=400&q=80",
   pug: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=400&q=80",
-  // Cats
+
   persian: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=400&q=80",
   siamese: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80",
   shorthair: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=400&q=80",
   tabby: "https://images.unsplash.com/photo-1561948955-570b270e7c36?auto=format&fit=crop&w=400&q=80",
   bengal: "https://images.unsplash.com/photo-1513360309081-38f0762daed1?auto=format&fit=crop&w=400&q=80",
-  // Rabbits
+
   lop: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=400&q=80",
   holland: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=400&q=80",
   bunny: "https://images.unsplash.com/photo-1535241749838-299277b6305f?auto=format&fit=crop&w=400&q=80",
   rabbit: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=400&q=80",
-  // Birds
+
   conure: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=400&q=80",
   parrot: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=400&q=80",
   budgie: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=400&q=80",
@@ -98,7 +98,6 @@ const resolveImageUrl = (url) => {
   if (!url || typeof url !== "string") return "";
   let clean = url.trim();
 
-  // If user pasted a Google search image link
   if (clean.includes("google.") && clean.includes("imgurl=")) {
     try {
       const match = clean.match(/imgurl=([^&]+)/);
@@ -108,7 +107,6 @@ const resolveImageUrl = (url) => {
     } catch (_) {}
   }
 
-  // If user pasted a Wikimedia / Wikipedia File page link
   if (clean.includes("wikimedia.org/wiki/File:") || clean.includes("wikipedia.org/wiki/File:")) {
     const filename = clean.split("/wiki/File:")[1]?.split("&")[0]?.split("?")[0];
     if (filename) {
@@ -123,7 +121,7 @@ const getPetImage = (pet) => {
   if (!pet) return speciesGalleries.Dog[0];
 
   const customUrl = resolveImageUrl(pet.photoUrl);
-  // Always prioritize and display the user's custom added photo URL
+
   if (
     customUrl &&
     (customUrl.startsWith("http://") ||
@@ -135,7 +133,6 @@ const getPetImage = (pet) => {
     return customUrl;
   }
 
-  // 1. Try matching breed
   const breedLower = (pet.breed || "").toLowerCase();
   for (const [key, url] of Object.entries(breedKeywords)) {
     if (breedLower.includes(key)) {
@@ -143,11 +140,9 @@ const getPetImage = (pet) => {
     }
   }
 
-  // 2. Lookup species gallery
   const speciesKey = pet.species && speciesGalleries[pet.species] ? pet.species : "Dog";
   const gallery = speciesGalleries[speciesKey] || speciesGalleries.Dog;
 
-  // 3. Hash name + id for consistent unique selection
   const str = `${pet.name || ""}_${pet._id || ""}_${pet.species || ""}`;
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -197,7 +192,7 @@ function Auth({ onLogin }) {
       localStorage.user = JSON.stringify(data.user);
       onLogin(data.user);
     } catch (e) {
-      // If network fails (e.g. Failed to fetch), provide seamless demo login
+
       if (e.message && (e.message.includes("fetch") || e.message.includes("Failed"))) {
         const isAdmin = loginType === "admin" || (form.email && form.email.includes("admin"));
         const fallbackUser = {
@@ -325,7 +320,6 @@ function Auth({ onLogin }) {
             />
           </label>
 
-          {/* Quick Demo Credentials Helper */}
           {mode === "login" && (
             <div
               className="demo-credentials-pill"
@@ -442,7 +436,6 @@ function Dashboard({ user, onLogout }) {
     }
   };
 
-  // Filter records to only those belonging to the logged-in user's companions
   const myRecords = useMemo(() => {
     if (user?.role === "admin") return records;
     if (!pets || pets.length === 0) return [];
@@ -698,7 +691,6 @@ function Dashboard({ user, onLogout }) {
                     </button>
                   </div>
 
-
                 </div>
               )}
             </div>
@@ -707,7 +699,6 @@ function Dashboard({ user, onLogout }) {
 
         {error && <div className="error banner">{error}</div>}
 
-        {/* ADMIN PORTAL PAGE */}
         {activePage === "Admin" && (
           <AdminPortal
             currentAdmin={user}
@@ -715,10 +706,8 @@ function Dashboard({ user, onLogout }) {
           />
         )}
 
-        {/* CARE CALENDAR PAGE */}
         {activePage === "Care calendar" && <Reminders pets={pets} user={user} />}
 
-        {/* MY PETS PAGE */}
         {activePage === "My pets" && (
           <>
             <section className="section-heading">
@@ -773,7 +762,6 @@ function Dashboard({ user, onLogout }) {
           </>
         )}
 
-        {/* OVERVIEW PAGE */}
         {activePage === "Overview" && (
           <>
             <section className="welcome-panel">
@@ -1175,7 +1163,6 @@ function PetForm({ pet, onClose, onSaved }) {
         <h2>{pet ? `Edit ${pet.name}` : "Add a pet"}</h2>
         <p className="panel-intro">A few details help keep their care journey organized.</p>
 
-        {/* Live Image Preview & Device Upload */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "18px", padding: "12px", background: "#f6faf8", borderRadius: "12px", border: "1px solid #e1eee7" }}>
           <img
             src={previewImage}
@@ -1399,3 +1386,4 @@ function CareRecordForm({ pet, onClose, onSaved }) {
 }
 createRoot(document.getElementById("root")).render(
   <BrowserRouter><App /></BrowserRouter>);
+

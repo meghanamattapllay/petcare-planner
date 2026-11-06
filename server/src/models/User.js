@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 
-/**
- * User MongoDB Model Schema
- * Assigned Member: CHIPPA VASU (Backend: Authentication)
- * Roll Number: 2303A51618
- */
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -41,7 +36,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Virtual alias for passwordHash to match project PDF specifications
 userSchema.virtual('passwordHash')
   .get(function () {
     return this.password;
@@ -51,3 +45,4 @@ userSchema.virtual('passwordHash')
   });
 
 module.exports = mongoose.model('User', userSchema);
+

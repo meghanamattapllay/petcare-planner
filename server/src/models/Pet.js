@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 
-/**
- * Pet MongoDB Model Schema
- * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll Number: 2303A51803 · Branch: CSE
- */
 const petSchema = new mongoose.Schema(
   {
     name: {
@@ -35,7 +30,7 @@ const petSchema = new mongoose.Schema(
       default: 'Unknown',
     },
     weight: {
-      type: Number, // weight in kilograms
+      type: Number,
       min: [0, 'Weight cannot be negative'],
     },
     allergies: {
@@ -60,7 +55,6 @@ const petSchema = new mongoose.Schema(
   }
 );
 
-// Virtual populate for care records linked to this pet
 petSchema.virtual('careRecords', {
   ref: 'CareRecord',
   localField: '_id',
@@ -69,3 +63,4 @@ petSchema.virtual('careRecords', {
 });
 
 module.exports = mongoose.model('Pet', petSchema);
+

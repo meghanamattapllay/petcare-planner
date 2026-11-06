@@ -1,10 +1,5 @@
 const mongoose = require('mongoose');
 
-/**
- * Care Record MongoDB Model Schema
- * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll Number: 2303A51803 · Branch: CSE
- */
 const careRecordSchema = new mongoose.Schema(
   {
     pet: {
@@ -92,7 +87,6 @@ const careRecordSchema = new mongoose.Schema(
   }
 );
 
-// Pre-save hook to synchronize aliases
 careRecordSchema.pre('save', function (next) {
   if (this.petId && !this.pet) this.pet = this.petId;
   if (this.pet && !this.petId) this.petId = this.pet;
@@ -106,3 +100,4 @@ careRecordSchema.pre('save', function (next) {
 });
 
 module.exports = mongoose.model('CareRecord', careRecordSchema);
+

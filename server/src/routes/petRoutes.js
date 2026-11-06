@@ -11,19 +11,12 @@ const {
 } = require('../controllers/petController');
 const { optionalAuth } = require('../middleware/authMiddleware');
 
-/**
- * Express Router: Pet Profiles CRUD Endpoints
- * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Integrated by: Godishala Kruthik Roshan
- */
-
 router.use(optionalAuth);
 
 router.route('/')
   .get(getPets)
   .post(createPet);
 
-// Sub-routes for pet care records
 router.get('/:id/care-records', getPetCareRecords);
 router.post('/:id/care-records', createPetCareRecord);
 
@@ -34,3 +27,4 @@ router.route('/:id')
   .delete(deletePet);
 
 module.exports = router;
+

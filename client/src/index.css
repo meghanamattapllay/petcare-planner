@@ -1,8 +1,3 @@
-/* ==========================================
-   PETCARE PLANNER - MODERN RESPONSIVE STYLES
-   PawTech Innovators
-   ========================================== */
-
 :root {
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
@@ -50,7 +45,6 @@ body {
   flex: 1;
 }
 
-/* NAVBAR */
 .navbar {
   background-color: #ffffff;
   border-bottom: 1px solid var(--border);
@@ -127,7 +121,6 @@ body {
   gap: 1rem;
 }
 
-/* STATUS BADGE */
 .status-badge-container {
   display: flex;
   align-items: center;
@@ -190,7 +183,6 @@ body {
   color: var(--text-main);
 }
 
-/* BUTTONS */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -280,14 +272,12 @@ body {
   border-color: var(--danger);
 }
 
-/* LAYOUT CONTAINER */
 .page-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }
 
-/* HERO SECTION */
 .hero-banner {
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
   color: #ffffff;
@@ -329,7 +319,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* INTEGRATION CARD */
 .integration-card {
   background: #ffffff;
   border: 1px solid var(--border);
@@ -413,7 +402,6 @@ body {
   color: var(--danger);
 }
 
-/* STATS GRID */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -459,7 +447,6 @@ body {
   color: var(--text-muted);
 }
 
-/* DASHBOARD FEATURE BOXES */
 .dashboard-features {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -500,7 +487,6 @@ body {
   text-decoration: underline;
 }
 
-/* SECTION HEADER */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -520,7 +506,6 @@ body {
   font-size: 0.9rem;
 }
 
-/* PET GRID */
 .pet-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -766,7 +751,6 @@ body {
   margin-top: 0.3rem;
 }
 
-/* FILTER BAR */
 .filter-bar {
   display: flex;
   justify-content: space-between;
@@ -814,7 +798,6 @@ body {
   border-color: var(--danger);
 }
 
-/* TIMELINE GRID */
 .timeline-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -907,7 +890,6 @@ body {
   color: var(--text-muted);
 }
 
-/* TEAM PAGE */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -1028,7 +1010,6 @@ body {
   margin-bottom: 0.2rem;
 }
 
-/* MODAL */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1105,7 +1086,6 @@ body {
   margin-top: 1.5rem;
 }
 
-/* AUTH PAGES */
 .auth-page-container {
   display: flex;
   align-items: center;
@@ -1175,7 +1155,6 @@ body {
   font-weight: 600;
 }
 
-/* FOOTER */
 .footer {
   background: #ffffff;
   border-top: 1px solid var(--border);
@@ -1206,7 +1185,6 @@ body {
   font-weight: 600;
 }
 
-/* RESPONSIVE MEDIA QUERIES */
 @media (max-width: 768px) {
   .navbar-container {
     flex-direction: column;
@@ -1258,3 +1236,4 @@ body {
     height: 190px;
   }
 }
+

@@ -1,11 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-/**
- * Authentication & Authorization Middleware
- * Assigned to: CHIPPA VASU (Backend: Authentication - Roll: 2303A51618)
- * Coordinated by: Godishala Kruthik Roshan (Integration - Roll: 2303A52339)
- */
-
 const protect = async (req, res, next) => {
   let token;
 
@@ -20,7 +14,6 @@ const protect = async (req, res, next) => {
         process.env.JWT_SECRET || 'dev_jwt_secret_key_12345'
       );
 
-      // Attach user payload to request
       req.user = decoded;
       return next();
     } catch (error) {
@@ -53,10 +46,11 @@ const optionalAuth = (req, res, next) => {
       );
       req.user = decoded;
     } catch (error) {
-      // Continue unauthenticated if token verification fails
+
     }
   }
   next();
 };
 
 module.exports = { protect, optionalAuth };
+

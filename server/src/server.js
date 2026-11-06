@@ -5,24 +5,15 @@ const fs = require('fs');
 require('dotenv').config();
 const { connectDB, getDBStatus } = require('./config/db');
 
-/**
- * PetCare Planner — Master Express Server Entry Point
- * Project: PetCare Planner — Pet Care Records & Reminder Board
- * Team Name: PawTech Innovators
- * Integrated by: Godishala Kruthik Roshan (Roll: 2303A52339)
- */
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
 connectDB();
 
-// Core Middleware & CORS (Permissive in production for Vercel/Render deployments)
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl) or any origin
+
       callback(null, true);
     },
     credentials: true,
@@ -31,15 +22,11 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Lightweight request logger for integration tracing
 app.use((req, res, next) => {
   console.log(`[HTTP] ${req.method} ${req.url} — ${new Date().toLocaleTimeString()}`);
   next();
 });
 
-// ==========================================
-// INTEGRATION & HEALTHCHECK ROUTE
-// ==========================================
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'ONLINE',
@@ -76,9 +63,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ==========================================
-// MOUNT MODULE ROUTERS
-// ==========================================
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/pets', require('./routes/petRoutes'));
 app.use('/api/records', require('./routes/recordRoutes'));
@@ -86,9 +70,6 @@ app.use('/api/care-records', require('./routes/recordRoutes'));
 app.use('/api/reminders', require('./routes/reminderRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 
-// ==========================================
-// STATIC FRONTEND SERVING (For Monorepo Production Deployments)
-// ==========================================
 const distPath = path.join(__dirname, '../../client/dist');
 const altDistPath = path.join(__dirname, '../client/dist');
 const clientDist = fs.existsSync(distPath) ? distPath : (fs.existsSync(altDistPath) ? altDistPath : null);
@@ -100,7 +81,7 @@ if (clientDist) {
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 } else {
-  // Root Fallback Info when client is not built locally
+
   app.get('/', (req, res) => {
     res.json({
       message: 'Welcome to the PetCare Planner Backend API Server',
@@ -110,7 +91,6 @@ if (clientDist) {
   });
 }
 
-// Centralized 404 handler for API routes
 app.use((req, res, next) => {
   res.status(404).json({
     success: false,
@@ -118,7 +98,6 @@ app.use((req, res, next) => {
   });
 });
 
-// Centralized Global Error Handler
 app.use((err, req, res, next) => {
   console.error(`[Server Error] ${err.stack || err.message}`);
   const statusCode = err.statusCode || res.statusCode === 200 ? 500 : res.statusCode;
@@ -129,7 +108,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`====================================================`);
@@ -141,3 +119,4 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 module.exports = app;
+

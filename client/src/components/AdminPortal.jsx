@@ -24,12 +24,11 @@ import {
 const API = import.meta.env.VITE_API_URL || (typeof window !== "undefined" && window.location.origin.includes(":5173") ? "http://localhost:5000/api" : "/api");
 
 const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
-  const [activeTab, setActiveTab] = useState("overview"); // overview, users, pets, records, categories
+  const [activeTab, setActiveTab] = useState("overview");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  // Data states
   const [stats, setStats] = useState({
     totalUsers: 5,
     totalPets: 13,
@@ -53,7 +52,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     "Other",
   ]);
 
-  // Filter states
   const [userSearch, setUserSearch] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("All");
   const [petSearch, setPetSearch] = useState("");
@@ -99,7 +97,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     setTimeout(() => setSuccessMsg(""), 4000);
   };
 
-  // Toggle User Role
   const handleToggleUserRole = async (user) => {
     const nextRole = user.role === "admin" ? "owner" : "admin";
     try {
@@ -116,7 +113,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     }
   };
 
-  // Admin Delete Pet
   const handleDeletePet = async (pet) => {
     if (!confirm(`Are you sure you want to delete profile for ${pet.name}? This will remove all their records.`)) return;
     try {
@@ -132,7 +128,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     }
   };
 
-  // Add Custom Care Category
   const handleAddCategory = async (e) => {
     e.preventDefault();
     if (!newCategoryName.trim()) return;
@@ -151,7 +146,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     }
   };
 
-  // Filtered Users
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
       u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
@@ -160,7 +154,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     return matchesSearch && matchesRole;
   });
 
-  // Filtered Pets
   const filteredPets = pets.filter((p) => {
     const matchesSearch =
       p.name.toLowerCase().includes(petSearch.toLowerCase()) ||
@@ -169,7 +162,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
     return matchesSearch && matchesSpecies;
   });
 
-  // Filtered Records
   const filteredRecords = records.filter((r) => {
     if (recordFilter === "All") return true;
     return r.status === recordFilter;
@@ -177,7 +169,7 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
 
   return (
     <div className="admin-portal-wrapper">
-      {/* Header Banner */}
+
       <header className="admin-banner">
         <div className="admin-banner-left">
           <div className="admin-badge">
@@ -210,11 +202,9 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
         </div>
       </header>
 
-      {/* Notifications / Alerts */}
       {error && <div className="admin-alert error"><AlertCircle size={17} /> {error}</div>}
       {successMsg && <div className="admin-alert success"><CheckCircle2 size={17} /> {successMsg}</div>}
 
-      {/* Admin Tabs */}
       <nav className="admin-tabs-nav">
         <button
           className={activeTab === "overview" ? "active" : ""}
@@ -248,7 +238,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
         </button>
       </nav>
 
-      {/* TAB 1: SYSTEM OVERVIEW */}
       {activeTab === "overview" && (
         <section className="admin-tab-content">
           <div className="admin-stat-grid">
@@ -294,7 +283,7 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
           </div>
 
           <div className="admin-grid-2col">
-            {/* Species Distribution */}
+
             <div className="admin-panel-card">
               <div className="panel-card-header">
                 <h4>🐾 Pet Species Distribution</h4>
@@ -324,7 +313,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
               </div>
             </div>
 
-            {/* System Health Diagnostics */}
             <div className="admin-panel-card">
               <div className="panel-card-header">
                 <h4>⚡ System Diagnostics & Security</h4>
@@ -363,7 +351,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
         </section>
       )}
 
-      {/* TAB 2: USERS REGISTRY */}
       {activeTab === "users" && (
         <section className="admin-tab-content">
           <div className="admin-table-toolbar">
@@ -448,7 +435,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
         </section>
       )}
 
-      {/* TAB 3: GLOBAL PET REGISTRY */}
       {activeTab === "pets" && (
         <section className="admin-tab-content">
           <div className="admin-table-toolbar">
@@ -514,7 +500,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
         </section>
       )}
 
-      {/* TAB 4: URGENT CARE BOARD */}
       {activeTab === "records" && (
         <section className="admin-tab-content">
           <div className="admin-table-toolbar">
@@ -575,7 +560,6 @@ const AdminPortal = ({ currentAdmin, onSwitchToOwnerView }) => {
         </section>
       )}
 
-      {/* TAB 5: CATEGORIES CONFIG */}
       {activeTab === "categories" && (
         <section className="admin-tab-content">
           <div className="admin-panel-card" style={{ maxWidth: "680px", margin: "0 auto" }}>

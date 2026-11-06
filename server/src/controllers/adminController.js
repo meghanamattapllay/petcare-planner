@@ -3,13 +3,6 @@ const Pet = require('../models/Pet');
 const CareRecord = require('../models/CareRecord');
 const { getDBStatus } = require('../config/db');
 
-/**
- * Controller: Admin Portal Management
- * System Administration, User Management, Global Registry & Analytics
- * PetCare Planner — PawTech Innovators
- */
-
-// In-memory fallback mock users for development / demo mode
 let mockUsers = [
   {
     _id: 'user_01',
@@ -65,8 +58,6 @@ let customCareCategories = [
   'Other',
 ];
 
-// @desc    Get system-wide platform statistics
-// @route   GET /api/admin/stats
 const getAdminStats = async (req, res, next) => {
   try {
     let totalUsers = mockUsers.length;
@@ -99,7 +90,7 @@ const getAdminStats = async (req, res, next) => {
         }
       });
     } catch (err) {
-      // Mock stats calculation
+
       totalUsers = mockUsers.length;
       totalPets = 13;
       totalRecords = 37;
@@ -123,8 +114,6 @@ const getAdminStats = async (req, res, next) => {
   }
 };
 
-// @desc    Get all registered users
-// @route   GET /api/admin/users
 const getAllUsers = async (req, res, next) => {
   try {
     let users = [];
@@ -132,7 +121,7 @@ const getAllUsers = async (req, res, next) => {
     try {
       const dbUsers = await User.find().select('-password').sort({ createdAt: -1 });
       if (dbUsers && dbUsers.length > 0) {
-        // Count pets for each user
+
         users = await Promise.all(
           dbUsers.map(async (u) => {
             const count = await Pet.countDocuments({
@@ -161,8 +150,6 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-// @desc    Update a user's role (promote/demote)
-// @route   PATCH /api/admin/users/:id/role
 const updateUserRole = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -206,8 +193,6 @@ const updateUserRole = async (req, res, next) => {
   }
 };
 
-// @desc    Get all pets across the platform
-// @route   GET /api/admin/pets
 const getAllPetsAdmin = async (req, res, next) => {
   try {
     let pets = [];
@@ -226,8 +211,6 @@ const getAllPetsAdmin = async (req, res, next) => {
   }
 };
 
-// @desc    Delete any pet (Admin moderation)
-// @route   DELETE /api/admin/pets/:id
 const deletePetAdmin = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -236,7 +219,7 @@ const deletePetAdmin = async (req, res, next) => {
       await Pet.findByIdAndDelete(id);
       await CareRecord.deleteMany({ $or: [{ petId: id }, { pet: id }] });
     } catch (err) {
-      // Mock delete
+
     }
 
     res.status(204).end();
@@ -245,14 +228,10 @@ const deletePetAdmin = async (req, res, next) => {
   }
 };
 
-// @desc    Get care category master data
-// @route   GET /api/admin/care-categories
 const getCareCategories = async (req, res) => {
   res.json(customCareCategories);
 };
 
-// @desc    Add a custom care category
-// @route   POST /api/admin/care-categories
 const addCareCategory = async (req, res) => {
   const { name } = req.body;
   if (!name || typeof name !== 'string') {

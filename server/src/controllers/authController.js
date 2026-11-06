@@ -2,14 +2,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
-/**
- * Controller: Authentication
- * Assigned Member: CHIPPA VASU (Backend: Authentication)
- * Roll: 2303A51618 · Branch: CSE
- * Integrated by: Godishala Kruthik Roshan
- */
-
-// Helper to generate JWT Token
 const generateToken = (id, email, name) => {
   return jwt.sign(
     { id, email, name },
@@ -18,9 +10,6 @@ const generateToken = (id, email, name) => {
   );
 };
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -32,7 +21,6 @@ const registerUser = async (req, res, next) => {
       });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email }).catch(() => null);
     if (existingUser) {
       return res.status(400).json({
@@ -41,11 +29,9 @@ const registerUser = async (req, res, next) => {
       });
     }
 
-    // Salt and hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user (or demo response if DB not connected)
     let user;
     try {
       user = await User.create({
@@ -79,9 +65,6 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-// @desc    Authenticate user & get token
-// @route   POST /api/auth/login
-// @access  Public
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -93,7 +76,6 @@ const loginUser = async (req, res, next) => {
       });
     }
 
-    // Instant Fast-Path for Known Test / Demo Credentials (0ms response)
     if (
       (email === 'admin@pawtech.com' && password === 'admin123') ||
       (req.body.loginType === 'admin' && email === 'admin@pawtech.com')
@@ -127,7 +109,6 @@ const loginUser = async (req, res, next) => {
       });
     }
 
-    // Database lookup for registered users
     let user;
     if (require('mongoose').connection.readyState === 1) {
       try {
@@ -137,7 +118,6 @@ const loginUser = async (req, res, next) => {
       }
     }
 
-    // Check password
     if (user && (await bcrypt.compare(password, user.password))) {
       const token = generateToken(user._id, user.email, user.name);
       return res.json({
@@ -162,9 +142,6 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-// @desc    Get current logged in user profile
-// @route   GET /api/auth/me
-// @access  Private (Requires protect middleware)
 const getMe = async (req, res, next) => {
   try {
     res.json({

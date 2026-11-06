@@ -96,7 +96,6 @@ export default function RemindersPage() {
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
       <div className="filter-bar">
         <div className="search-wrap">
           <input
@@ -129,7 +128,6 @@ export default function RemindersPage() {
         </div>
       </div>
 
-      {/* Reminders List */}
       {loading ? (
         <div className="loading-state">Calculating timeline and due dates...</div>
       ) : filteredReminders.length === 0 ? (
@@ -183,7 +181,6 @@ export default function RemindersPage() {
         </div>
       )}
 
-      {/* Schedule Care Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-dialog">

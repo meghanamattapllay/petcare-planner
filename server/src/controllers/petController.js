@@ -3,14 +3,6 @@ const Pet = require('../models/Pet');
 const CareRecord = require('../models/CareRecord');
 const User = require('../models/User');
 
-/**
- * Controller: Pet Profiles CRUD
- * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll Number: 2303A51803 · Branch: CSE
- * Integrated by: Godishala Kruthik Roshan
- */
-
-// In-memory store for instant demonstration when DB is disconnected
 let mockPets = [
   {
     _id: 'pet_01',
@@ -40,7 +32,6 @@ let mockPets = [
   },
 ];
 
-// Helper to resolve an owner ObjectId for unauthenticated Postman/demo calls
 const resolveOwnerId = async (req) => {
   if (req.user && (req.user.id || req.user._id)) {
     return req.user.id || req.user._id;
@@ -54,14 +45,11 @@ const resolveOwnerId = async (req) => {
       return existingUser._id;
     }
   } catch (err) {
-    // Database lookup not available
+
   }
   return new mongoose.Types.ObjectId();
 };
 
-// @desc    Get all pets (filtered by owner if authenticated)
-// @route   GET /api/pets
-// @access  Public / Private
 const getPets = async (req, res, next) => {
   try {
     const ownerId = req.user ? (req.user.id || req.user._id) : null;
@@ -99,9 +87,6 @@ const getPets = async (req, res, next) => {
   }
 };
 
-// @desc    Get a single pet by ID
-// @route   GET /api/pets/:id
-// @access  Public / Private
 const getPetById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -135,14 +120,10 @@ const getPetById = async (req, res, next) => {
   }
 };
 
-// @desc    Create a new pet profile
-// @route   POST /api/pets
-// @access  Public / Private
 const createPet = async (req, res, next) => {
   try {
     const { name, species, breed, age, gender, weight, allergies, photoUrl } = req.body;
 
-    // Enforce required fields
     if (!name || !String(name).trim() || !species || !String(species).trim()) {
       return res.status(400).json({
         success: false,
@@ -150,7 +131,6 @@ const createPet = async (req, res, next) => {
       });
     }
 
-    // Validate age if provided
     if (age !== undefined && age !== null && age !== '' && Number(age) < 0) {
       return res.status(400).json({
         success: false,
@@ -158,7 +138,6 @@ const createPet = async (req, res, next) => {
       });
     }
 
-    // Validate gender enum
     if (gender && !['Male', 'Female', 'Unknown'].includes(gender)) {
       return res.status(400).json({
         success: false,
@@ -214,9 +193,6 @@ const createPet = async (req, res, next) => {
   }
 };
 
-// @desc    Update an existing pet profile
-// @route   PUT /api/pets/:id
-// @access  Public / Private
 const updatePet = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -262,9 +238,6 @@ const updatePet = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a pet profile and associated care records
-// @route   DELETE /api/pets/:id
-// @access  Public / Private
 const deletePet = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -275,7 +248,7 @@ const deletePet = async (req, res, next) => {
         const deletedDoc = await Pet.findByIdAndDelete(id);
         if (deletedDoc) {
           foundAndDeleted = true;
-          // Cascade delete associated care records
+
           await CareRecord.deleteMany({
             $or: [{ pet: id }, { petId: id }],
           });
@@ -310,9 +283,6 @@ const deletePet = async (req, res, next) => {
   }
 };
 
-
-// @desc    Get care records for a specific pet
-// @route   GET /api/pets/:id/care-records
 const getPetCareRecords = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -352,8 +322,6 @@ const getPetCareRecords = async (req, res, next) => {
   }
 };
 
-// @desc    Create care record for a specific pet
-// @route   POST /api/pets/:id/care-records
 const createPetCareRecord = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -434,3 +402,4 @@ module.exports = {
   updatePet,
   deletePet,
 };
+

@@ -3,14 +3,6 @@ const CareRecord = require('../models/CareRecord');
 const Pet = require('../models/Pet');
 const User = require('../models/User');
 
-/**
- * Controller: Care Record CRUD & Timeline Integration
- * Assigned Member: BODASU NITHIN (Backend: Database & APIs)
- * Roll Number: 2303A51803 · Branch: CSE
- * Timeline Integration: MATAPALLY MEGHANA (Reminders & Timeline)
- * Integrated by: Godishala Kruthik Roshan
- */
-
 const VALID_CARE_TYPES = [
   'Vaccination',
   'Medication',
@@ -23,7 +15,6 @@ const VALID_CARE_TYPES = [
 
 const VALID_STATUSES = ['Completed', 'Upcoming', 'Overdue'];
 
-// Fallback in-memory store for integration when DB is unavailable
 let mockRecords = [
   {
     _id: 'rec_01',
@@ -69,7 +60,6 @@ let mockRecords = [
   },
 ];
 
-// Helper to resolve an owner ObjectId for care records
 const resolveOwnerForRecord = async (req, petId) => {
   if (req.user && (req.user.id || req.user._id)) {
     return req.user.id || req.user._id;
@@ -77,7 +67,7 @@ const resolveOwnerForRecord = async (req, petId) => {
   if (req.body && (req.body.owner || req.body.ownerId)) {
     return req.body.owner || req.body.ownerId;
   }
-  // Try inheriting from the associated pet
+
   if (petId && mongoose.Types.ObjectId.isValid(petId)) {
     try {
       const associatedPet = await Pet.findById(petId);
@@ -85,24 +75,21 @@ const resolveOwnerForRecord = async (req, petId) => {
         return associatedPet.owner;
       }
     } catch (err) {
-      // Pet lookup skipped
+
     }
   }
-  // Fallback to any registered user in the database
+
   try {
     const existingUser = await User.findOne();
     if (existingUser) {
       return existingUser._id;
     }
   } catch (err) {
-    // Database lookup not available
+
   }
   return new mongoose.Types.ObjectId();
 };
 
-// @desc    Get all care records (supports filters: petId, careType, status)
-// @route   GET /api/records
-// @access  Public / Private
 const getRecords = async (req, res, next) => {
   try {
     const { petId, careType, status } = req.query;
@@ -160,9 +147,6 @@ const getRecords = async (req, res, next) => {
   }
 };
 
-// @desc    Get a single care record by ID
-// @route   GET /api/records/:id
-// @access  Public / Private
 const getRecordById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -198,9 +182,6 @@ const getRecordById = async (req, res, next) => {
   }
 };
 
-// @desc    Create a new care record
-// @route   POST /api/records
-// @access  Public / Private
 const createRecord = async (req, res, next) => {
   try {
     const {
@@ -218,7 +199,6 @@ const createRecord = async (req, res, next) => {
 
     const targetPetId = pet || petId;
 
-    // Enforce required fields
     if (!targetPetId || !careType || !title || !nextDueDate) {
       return res.status(400).json({
         success: false,
@@ -227,7 +207,6 @@ const createRecord = async (req, res, next) => {
       });
     }
 
-    // Validate careType enum
     const matchedType = VALID_CARE_TYPES.find(
       (t) => t.toLowerCase() === String(careType).trim().toLowerCase()
     );
@@ -238,7 +217,6 @@ const createRecord = async (req, res, next) => {
       });
     }
 
-    // Validate status enum if provided
     let normalizedStatus = 'Upcoming';
     if (status) {
       const matchedStatus = VALID_STATUSES.find(
@@ -253,7 +231,6 @@ const createRecord = async (req, res, next) => {
       normalizedStatus = matchedStatus;
     }
 
-    // Validate cost if provided
     if (cost !== undefined && cost !== null && cost !== '' && Number(cost) < 0) {
       return res.status(400).json({
         success: false,
@@ -308,9 +285,6 @@ const createRecord = async (req, res, next) => {
   }
 };
 
-// @desc    Update an existing care record
-// @route   PUT /api/records/:id
-// @access  Public / Private
 const updateRecord = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -391,9 +365,6 @@ const updateRecord = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a care record by ID
-// @route   DELETE /api/records/:id
-// @access  Public / Private
 const deleteRecord = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -435,9 +406,6 @@ const deleteRecord = async (req, res, next) => {
   }
 };
 
-
-// @desc    Get upcoming care records
-// @route   GET /api/care-records/upcoming or /api/records/upcoming
 const getUpcomingCareRecords = async (req, res, next) => {
   try {
     const user = req.user;
@@ -446,7 +414,7 @@ const getUpcomingCareRecords = async (req, res, next) => {
     if (mongoose.connection.readyState === 1) {
       try {
         const query = { nextDueDate: { $exists: true, $ne: null } };
-        // If not admin, only fetch records belonging to this user or their pets
+
         if (user && user.role !== 'admin') {
           const ownerId = user.id || user._id;
           const userPets = await Pet.find({ $or: [{ owner: ownerId }, { ownerId: ownerId }] }).select('_id');
@@ -468,10 +436,9 @@ const getUpcomingCareRecords = async (req, res, next) => {
       }
     }
 
-    // Only inject mock records if in local fallback / offline demo mode and user is admin or no DB
     const isDBConnected = mongoose.connection.readyState === 1;
     const combined = [...records.map((r) => (r.toObject ? r.toObject() : r))];
-    
+
     if (!isDBConnected && Array.isArray(mockRecords)) {
       mockRecords.forEach((m) => {
         if (!combined.some((c) => String(c._id) === String(m._id))) {
@@ -519,3 +486,4 @@ module.exports = {
   updateRecord,
   deleteRecord,
 };
+

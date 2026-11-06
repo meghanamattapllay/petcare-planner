@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   return (
     <div className="page-container">
-      {/* Hero Header */}
+
       <section className="hero-banner">
         <div className="hero-content">
           <div className="hero-badge">Team PawTech Innovators</div>
@@ -64,7 +64,6 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Integration Verification Card */}
       <section className="integration-card">
         <div className="integration-header">
           <div className="integration-badge">
@@ -95,7 +94,6 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Quick Metrics */}
       <section className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon">🐕</div>
@@ -130,7 +128,6 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Quick Feature Highlights */}
       <section className="dashboard-features">
         <div className="feature-box">
           <h3>🐶 Pet Profiles</h3>
