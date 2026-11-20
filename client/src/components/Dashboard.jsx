@@ -174,10 +174,10 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       </aside>
 
-      <main className="main-content">
+      <main className="main-content dashboard">
         <header className="topbar">
           <div className="topbar-left">
-            <button className="menu-btn" onClick={() => setSidebarOpen(true)} title="Open navigation">
+            <button className="menu-btn mobile-nav-toggle" onClick={() => setSidebarOpen(true)} title="Open navigation">
               <Menu size={20} />
             </button>
 
@@ -369,7 +369,7 @@ export default function Dashboard({ user, onLogout }) {
 
         {activePage === "Overview" && (
           <>
-            <section className="hero">
+            <section className="welcome-panel hero">
               <div>
                 <span className="eyebrow">Your care overview</span>
                 <h2>
