@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "PetCare Planner — Pet Care Records & Reminder Board by PawTech Innovators",
   "scripts": {
-    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
-    "build": "npm --prefix client install --include=dev && npm --prefix client run build && npm --prefix server install --omit=dev",
+    "dev": "concurrently \"npm --prefix server start\" \"npm --prefix client run dev\"",
     "start": "node server/src/server.js",
-    "server": "cd server && npm run dev",
-    "client": "cd client && npm run dev",
-    "build:client": "cd client && npm run build"
+    "build": "npm --prefix client install --include=dev && npm --prefix client run build && npm --prefix server install --omit=dev",
+    "server": "npm --prefix server start",
+    "client": "npm --prefix client run dev",
+    "build:client": "npm --prefix client run build",
+    "test": "node server/test-integration.js"
   },
   "keywords": [
     "mern",
@@ -19,5 +20,8 @@
     "petcare-planner"
   ],
   "author": "PawTech Innovators",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^10.0.7"
+  }
 }
